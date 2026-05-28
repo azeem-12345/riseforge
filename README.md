@@ -1,58 +1,38 @@
-# RiseForge: Global Founder Operating System
+# RiseForge — The Founder OS
 
-RiseForge is a high-fidelity, premium entrepreneurial growth engine designed to take users from "Dreamers" to "Empire Architects" through a structured 52-week curriculum and a real-time business simulation.
+**Build. Learn. Rise.**  
+The complete platform where ambitious founders go from idea to IPO.
 
-## 🚀 Core Philosophy
-- **Simple English First**: All content must be understandable for everyone, from teenagers to adults. No business jargon without immediate, simple explanation.
-- **Action-Oriented**: Focus on solving real-world problems.
-- **Gamified Mastery**: Progress is tracked through XP, Level, and Reputation.
+## Vision
+RiseForge is the **Duolingo + MasterClass + SimCity for entrepreneurship**. A gamified, AI-powered **Global Founder Operating System**.
 
-## 🛠 Tech Stack
-- **Framework**: Next.js 15 (App Router)
-- **Styling**: Tailwind CSS + ShadCN UI
-- **Animations**: Framer Motion
-- **AI Engine**: Genkit (Google Gemini 2.5 Flash)
-- **Database/Auth**: Firebase (Firestore & Auth)
+**Mission**: Help 1 million founders launch successful companies by 2035.
 
-## 🏢 Module Definitions (Simplified)
+## ✨ Core Features
+- **Problem Scout** — AI finds painful real-world problems
+- **Idea Lab** — AI co-founder for idea refinement
+- **Pitch Room** — Real-time pitch scoring
+- **CEO Simulator** — Realistic business game with cash flow & crises
+- **Rise Academy** — Gamified 52-week curriculum (5 levels)
+- **Guilds & Leaderboards** — Compete and collaborate
 
-### 1. Finding Problems (Step 1)
-- **Purpose**: To train the user's "Opportunity Awareness."
-- **Logic**: Use AI (Problem Scout) to scan and generate real-world struggles.
-- **Goal**: Identify what is "broken" in the world before thinking of a solution.
+## Tech Stack
+- Next.js 15 + React 19 + TypeScript
+- Tailwind + ShadCN/UI + Framer Motion
+- Firebase (Auth + Firestore)
+- Google Gemini via Genkit
 
-### 2. Idea Lab (Step 2)
-- **Purpose**: To design a fix for a discovered problem.
-- **Logic**: Users input their problem, solution, audience, and money plan.
-- **AI Role**: Provides encouraging feedback and improvement suggestions.
+## Quick Start
+```bash
+git clone https://github.com/azeem-12345/riseforge2.git
+cd riseforge2
+npm install
+npm run dev
+```
 
-### 3. Pitch Room (Step 3)
-- **Purpose**: To practice explaining the business clearly.
-- **Logic**: Evaluates "Clarity Score" based on how simple and effective the explanation is.
-- **Goal**: Build trust and reputation through clear communication.
+## Roadmap to Billion-Dollar Scale
+- **Q3 2026**: Public Beta, Streaks, Mobile PWA
+- **2027**: Multiplayer Simulation + Creator Marketplace
+- **2028**: AI Autonomous Agents + Real Revenue Tracking
 
-### 4. Business Game (Simulation)
-- **Purpose**: A CEO Life Simulator.
-- **Phases**: Foundation -> Building -> Operating -> Crisis -> Exit.
-- **Features**: Real-time cash flow, employee burnout, market cycles (Boom/Recession), and stress management.
-
-### 5. Academy Path (Courses)
-- **Structure**: 5 Levels, 52 Weeks.
-- **Level 1**: Foundation (Weeks 1-10)
-- **Level 2**: Idea to Company (Weeks 11-20)
-- **Level 3**: Launch & Growth (Weeks 21-32)
-- **Level 4**: Scaling & Operations (Weeks 33-44)
-- **Level 5**: Elite Founder (Weeks 45-52)
-- **UI**: Sliding pages (Theory -> Scenario -> Integration -> Summary).
-
-## 🎨 Style Guidelines
-- **Theme**: Dark Mode (Background: `#241F2E`, Accent: Electric Blue/Violet).
-- **Typography**: **Poppins** for big, bold headings; **Inter** for clear body text.
-- **Glass Cards**: Subtle transparency and blur for a premium feel.
-- **Page Guides**: Small tutorial boxes appear on the first visit to every page.
-
-## 🎮 Game State Logic
-- **XP**: Earned via Academy and Business Game.
-- **Reputation**: Built through successful pitches and simulation wins.
-- **Skills**: Six-axis chart tracking Strategy, Finance, Risk, Negotiation, Market, and Leadership.
-- **Unlocks**: Completing Academy weeks unlocks tactical modules in the OS.
+Built with ❤️ in Kerala, India. Join the movement!
