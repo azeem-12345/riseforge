@@ -1,1 +1,1 @@
-riseforge2.vercell.app
+https//:riseforge2.vercell.app
