@@ -244,21 +244,21 @@ export default function WorldMapPage() {
     <GameShell>
       <div className="space-y-10 pb-32 max-w-4xl mx-auto">
         {/* Header section */}
-        <div className="space-y-4 border-b border-white/5 pb-6">
+        <div className="space-y-4 border-b border-white/[0.08] pb-6">
           <div className="flex justify-between items-end">
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold uppercase tracking-widest text-primary/70">Academy Curriculum</span>
+                <span className="text-xs font-medium tracking-wide text-primary/80">Academy Curriculum</span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground">The Academy Path</h1>
-              <p className="text-xs md:text-sm text-muted-foreground font-normal">
+              <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground/90">The Academy Path</h1>
+              <p className="text-sm text-muted-foreground font-normal">
                 Master 52 weeks of elite founder theory and mental models.
               </p>
             </div>
             <div className="hidden sm:flex gap-4">
-              <div className="bg-white/5 border border-white/5 px-4 py-2 rounded-xl flex items-center gap-2">
-                <BookOpen className="w-3.5 h-3.5 text-muted-foreground" />
-                <span className="text-xs font-mono font-semibold text-foreground uppercase tracking-wider">
+              <div className="glass-card px-4 py-2.5 rounded-xl flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-muted-foreground" />
+                <span className="text-xs font-mono font-medium text-foreground tracking-wide">
                   {state.completedLessons.length} / 52 Modules
                 </span>
               </div>
@@ -281,13 +281,13 @@ export default function WorldMapPage() {
                   {isActive && (
                     <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/10 blur-xl rounded-full" />
                   )}
-                  <h3 className="font-semibold text-xs text-foreground tracking-tight">{world.name}</h3>
-                  <div className="flex justify-between items-center mt-3 text-[10px] text-muted-foreground uppercase font-mono">
+                  <h3 className="font-semibold text-[13px] text-foreground/90 tracking-tight">{world.name}</h3>
+                  <div className="flex justify-between items-center mt-3 text-[11px] text-muted-foreground tracking-wide font-mono">
                     <span>{isActive ? `${world.weeks} Modules` : 'Locked'}</span>
                     {isActive ? (
-                      <span className="text-emerald-400 bg-emerald-400/10 px-1.5 py-0.5 rounded text-[9px] font-medium border border-emerald-500/20">Active</span>
+                      <span className="text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-md font-medium border border-emerald-500/20">Active</span>
                     ) : (
-                      <Lock className="w-3 h-3 text-muted-foreground/50" />
+                      <Lock className="w-3.5 h-3.5 text-muted-foreground/50" />
                     )}
                   </div>
                 </motion.div>
@@ -363,37 +363,37 @@ export default function WorldMapPage() {
                       : "md:mr-auto md:justify-end md:pr-10"
                   )}>
                     <Card className={cn(
-                      "w-full max-w-sm transition-all duration-300 p-4 border rounded-xl bg-card/25 backdrop-blur-sm relative overflow-hidden",
+                      "w-full max-w-sm transition-all duration-300 p-5 rounded-2xl relative overflow-hidden",
                       status === 'complete' 
-                        ? "border-emerald-500/10 opacity-70 hover:opacity-100 hover:border-emerald-500/20" 
+                        ? "glass-card opacity-70 hover:opacity-100 hover:border-emerald-500/30" 
                         : status === 'current' 
-                          ? "border-primary/20 bg-white/[0.02] shadow-[0_0_30px_rgba(255,255,255,0.02)] hover:border-primary/40 ring-1 ring-primary/10" 
-                          : "border-white/5 opacity-40 select-none"
+                          ? "glass-card border-primary/30 shadow-[0_0_30px_rgba(var(--primary)/0.15)] hover:border-primary/50" 
+                          : "border border-white/5 bg-transparent opacity-40 select-none"
                     )}>
                       {/* Active Indicator Spotlight */}
                       {status === 'current' && (
-                        <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/5 blur-2xl rounded-full" />
+                        <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 blur-3xl rounded-full" />
                       )}
 
                       {/* Card Content */}
-                      <div className="space-y-2">
+                      <div className="space-y-3 relative z-10">
                         {/* Topic Tag and Status Indicator */}
-                        <div className="flex justify-between items-center text-[9px] font-mono tracking-wider">
+                        <div className="flex justify-between items-center text-[11px] font-mono tracking-wide">
                           <span className={cn(
-                            "px-1.5 py-0.5 rounded uppercase font-semibold",
-                            status === 'complete' ? "bg-emerald-500/5 text-emerald-400 border border-emerald-500/10" :
-                            status === 'current' ? "bg-primary/10 text-primary border border-primary/20" :
-                            "bg-neutral-800 text-muted-foreground/60"
+                            "px-2 py-0.5 rounded-md font-medium",
+                            status === 'complete' ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
+                            status === 'current' ? "bg-primary/15 text-primary border border-primary/30" :
+                            "bg-white/[0.05] text-muted-foreground/70"
                           )}>
                             {node.topic}
                           </span>
                           {status === 'current' && (
-                            <span className="text-primary font-semibold uppercase animate-pulse flex items-center gap-1">
-                              <span className="w-1 h-1 rounded-full bg-primary" /> Active Module
+                            <span className="text-primary font-medium tracking-wide animate-pulse flex items-center gap-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Active Module
                             </span>
                           )}
                           {status === 'complete' && (
-                            <span className="text-emerald-400 font-semibold uppercase flex items-center gap-1">
+                            <span className="text-emerald-400 font-medium tracking-wide flex items-center gap-1.5">
                               Completed
                             </span>
                           )}
@@ -402,33 +402,33 @@ export default function WorldMapPage() {
                         {/* Title and Short Description */}
                         <div>
                           <h4 className={cn(
-                            "font-semibold text-sm tracking-tight text-foreground transition-colors",
+                            "font-semibold text-[15px] tracking-tight transition-colors",
                             status === 'complete' && "text-foreground/80 line-through decoration-muted-foreground/30",
-                            status === 'current' && "text-foreground group-hover:text-primary",
+                            status === 'current' && "text-foreground/90 group-hover:text-primary",
                             status === 'locked' && "text-muted-foreground/50"
                           )}>
                             {node.title}
                           </h4>
-                          <p className="text-[11px] text-muted-foreground leading-normal mt-0.5">
+                          <p className="text-xs text-muted-foreground/80 leading-relaxed mt-1">
                             {status === 'locked' ? 'Locked Module' : node.description}
                           </p>
                         </div>
 
                         {/* Show Details for Completed or Current */}
                         {status !== 'locked' && (
-                          <div className="pt-2 border-t border-white/5 space-y-2">
-                            <p className="text-[10px] text-muted-foreground/70 leading-relaxed">
+                          <div className="pt-3 border-t border-white/[0.08] space-y-3">
+                            <p className="text-[11px] text-muted-foreground/70 leading-relaxed">
                               {node.overview}
                             </p>
                             
-                            <div className="flex justify-between items-center pt-1 text-[9px] text-muted-foreground/50 font-mono">
-                              <span className="flex items-center gap-1">
-                                <Clock className="w-2.5 h-2.5" /> {node.duration}
+                            <div className="flex justify-between items-center pt-1 text-[10px] text-muted-foreground/60 font-mono">
+                              <span className="flex items-center gap-1.5">
+                                <Clock className="w-3 h-3" /> {node.duration}
                               </span>
-                              <span className="flex items-center gap-1">
-                                <Activity className="w-2.5 h-2.5" /> {node.skills}
+                              <span className="flex items-center gap-1.5">
+                                <Activity className="w-3 h-3" /> {node.skills}
                               </span>
-                              <span className="text-emerald-500 font-medium">
+                              <span className="text-emerald-400 font-medium text-[11px]">
                                 {node.xp}
                               </span>
                             </div>
@@ -437,10 +437,10 @@ export default function WorldMapPage() {
 
                         {/* Launch Module Call to Action */}
                         {status === 'current' && (
-                          <Button asChild size="sm" className="w-full mt-3 h-8 bg-primary text-primary-foreground hover:bg-primary/90 text-[10px] font-medium rounded-lg">
+                          <Button asChild className="w-full mt-4 h-10 bg-primary text-primary-foreground hover:bg-primary/90 text-[13px] font-medium rounded-xl shadow-[0_0_15px_rgba(var(--primary)/0.2)] transition-all">
                             <Link href={`/lesson/${node.id}`}>
                               <span>Launch Lesson</span>
-                              <ChevronRight className="w-3.5 h-3.5 ml-1" />
+                              <ChevronRight className="w-4 h-4 ml-1.5" />
                             </Link>
                           </Button>
                         )}

@@ -128,52 +128,52 @@ export default function OpportunityScannerPage() {
 
       <div className="max-w-6xl mx-auto space-y-10 pb-20">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-[10px] font-black uppercase tracking-widest">
+          <div className="space-y-1.5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold uppercase tracking-widest shadow-[0_0_10px_rgba(var(--accent)/0.1)]">
               <Eye className="w-3.5 h-3.5" /> Problem Spotter
             </div>
-            <h1 className="text-3xl font-headline font-black tracking-tighter">Finding Problems</h1>
-            <p className="text-[11px] text-muted-foreground uppercase font-black tracking-[0.3em]">Step 1: Look at the world</p>
+            <h1 className="text-3xl font-headline font-semibold tracking-tight text-foreground/90">Finding Problems</h1>
+            <p className="text-sm text-muted-foreground font-medium tracking-wide">Step 1: Look at the world and identify pain points.</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <Button 
               variant="outline" 
               size="sm" 
               onClick={fetchProblems} 
               disabled={loading}
-              className="rounded-xl border-white/10 h-10 text-[10px] font-black uppercase tracking-widest animate-fade-in"
+              className="rounded-xl border-white/[0.08] h-11 px-4 text-xs font-semibold tracking-wide bg-white/[0.02] hover:bg-white/[0.06] shadow-sm transition-all"
             >
               {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
               Refresh Struggles
             </Button>
-            <div className="glass-card px-6 py-2.5 rounded-xl border-white/5">
-              <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Struggles Found</p>
-              <p className="text-lg font-black tabular-nums">{logs.length} / 10</p>
+            <div className="glass-card px-6 py-2.5 rounded-xl flex flex-col justify-center border-white/[0.08]">
+              <p className="text-xs font-medium text-muted-foreground/80 tracking-wide">Struggles Found</p>
+              <p className="text-lg font-semibold tabular-nums text-foreground/90 mt-0.5">{logs.length} <span className="text-sm text-muted-foreground/50">/ 10</span></p>
             </div>
           </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            <h3 className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-2 px-2">
+            <h3 className="text-sm font-semibold tracking-tight text-primary/90 flex items-center gap-2 px-2">
               <Search className="w-4 h-4" /> Real-World Struggles
             </h3>
             
             <div className="space-y-4">
               {loading ? (
                 Array.from({ length: 3 }).map((_, i) => (
-                  <Card key={i} className="glass-card border-white/5 animate-pulse">
+                  <Card key={i} className="glass-card border-white/[0.08] animate-pulse">
                     <CardContent className="p-10" />
                   </Card>
                 ))
               ) : error ? (
                 <Card className="glass-card border-red-500/10 bg-red-500/[0.02] p-8 text-center space-y-4">
-                  <p className="text-xs text-red-400 font-medium max-w-md mx-auto">{error}</p>
+                  <p className="text-sm text-red-400 font-medium max-w-md mx-auto">{error}</p>
                   <Button 
                     variant="outline" 
                     size="sm" 
                     onClick={fetchProblems}
-                    className="border-red-500/20 text-red-400 hover:bg-red-500/10 h-8 text-[10px] font-semibold uppercase tracking-wider rounded-lg"
+                    className="border-red-500/20 text-red-400 hover:bg-red-500/10 h-10 text-xs font-semibold tracking-wide rounded-xl"
                   >
                     Try Again
                   </Button>
@@ -184,23 +184,23 @@ export default function OpportunityScannerPage() {
                     key={trend.id} 
                     onClick={() => setSelectedTrend(trend)}
                     className={cn(
-                      "glass-card border-white/5 hover:border-accent/40 transition-all cursor-pointer group relative overflow-hidden",
-                      selectedTrend?.id === trend.id && "border-accent/60 bg-accent/5"
+                      "glass-card transition-all cursor-pointer group relative overflow-hidden",
+                      selectedTrend?.id === trend.id ? "border-primary/40 bg-primary/5 ring-1 ring-primary/20" : "border-white/[0.05] hover:border-white/[0.15]"
                     )}
                   >
                     <CardContent className="p-6 flex justify-between items-center">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="text-[8px] font-black uppercase border-accent/20 text-accent">{trend.segment}</Badge>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2.5">
+                          <Badge variant="outline" className="text-[10px] font-medium tracking-wide uppercase border-white/10 bg-white/5 text-foreground/80">{trend.segment}</Badge>
                           <Badge className={cn(
-                            "text-[8px] font-black uppercase",
-                            trend.intensity === 'High' ? "bg-red-500/20 text-red-500" : "bg-orange-500/20 text-orange-500"
+                            "text-[10px] font-medium tracking-wide uppercase",
+                            trend.intensity === 'High' ? "bg-red-500/15 text-red-400 border-red-500/20 border" : "bg-orange-500/15 text-orange-400 border-orange-500/20 border"
                           )}>Pain Level: {trend.intensity}</Badge>
                         </div>
-                        <h4 className="text-lg font-black tracking-tight group-hover:text-accent transition-colors">{trend.title}</h4>
-                        <p className="text-[11px] text-muted-foreground line-clamp-1 italic">"{trend.description}"</p>
+                        <h4 className="text-lg font-semibold tracking-tight group-hover:text-primary transition-colors text-foreground/90">{trend.title}</h4>
+                        <p className="text-sm text-muted-foreground/80 line-clamp-1 italic">"{trend.description}"</p>
                       </div>
-                      <ArrowUpRight className="w-5 h-5 text-muted-foreground group-hover:text-accent group-hover:translate-x-1 transition-all" />
+                      <ArrowUpRight className="w-5 h-5 text-muted-foreground/50 group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
                     </CardContent>
                   </Card>
                 ))
@@ -217,28 +217,29 @@ export default function OpportunityScannerPage() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                 >
-                  <Card className="glass-card border-accent/40 bg-accent/5 p-8 space-y-6">
+                  <Card className="glass-card border-primary/30 bg-primary/5 shadow-[0_0_40px_rgba(var(--primary)/0.1)] p-8 space-y-6">
                     <div className="space-y-2">
-                      <p className="text-[10px] font-black text-accent uppercase tracking-widest">Studying the Problem</p>
-                      <h3 className="text-xl font-black">{selectedTrend.title}</h3>
+                      <p className="text-xs font-semibold text-primary uppercase tracking-wider">Studying the Problem</p>
+                      <h3 className="text-xl md:text-2xl font-semibold text-foreground/90 tracking-tight">{selectedTrend.title}</h3>
                     </div>
-                    <div className="p-4 bg-black/40 rounded-xl border border-white/5">
-                      <p className="text-[12px] leading-relaxed text-foreground/80 italic">
-                        {selectedTrend.description}
+                    <div className="p-5 bg-background/50 rounded-2xl border border-white/[0.08]">
+                      <p className="text-sm leading-relaxed text-muted-foreground italic">
+                        "{selectedTrend.description}"
                       </p>
                     </div>
                     <div className="space-y-3">
-                      <div className="flex items-center gap-2 text-primary">
+                      <div className="flex items-center gap-2 text-primary/80">
                         <Sparkles className="w-4 h-4" />
-                        <h5 className="text-[10px] font-black uppercase tracking-widest">Possible Fix</h5>
+                        <h5 className="text-xs font-semibold uppercase tracking-wider">Possible Fix</h5>
                       </div>
-                      <p className="text-[11px] font-bold text-foreground/90">{selectedTrend.potential}</p>
+                      <p className="text-[15px] font-medium text-foreground/80 leading-relaxed">{selectedTrend.potential}</p>
                     </div>
                     
-                    <div className="space-y-3 pt-2">
+                    <div className="space-y-3 pt-4">
                       <Button 
                         onClick={() => logPattern(selectedTrend)}
-                        className="w-full h-11 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black uppercase text-[10px] tracking-widest"
+                        variant="outline"
+                        className="w-full h-12 rounded-xl border-white/[0.1] bg-white/[0.02] hover:bg-white/[0.05] text-foreground text-sm font-semibold transition-all"
                       >
                         Save to My Notebook
                       </Button>
@@ -247,7 +248,7 @@ export default function OpportunityScannerPage() {
                       <Button 
                         onClick={() => startMentorDiscussion(selectedTrend)}
                         disabled={discussing}
-                        className="w-full h-11 rounded-xl bg-accent hover:bg-accent/90 text-white font-black uppercase text-[10px] tracking-widest shadow-xl shadow-accent/20 flex items-center justify-center gap-2"
+                        className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold shadow-[0_0_20px_rgba(var(--primary)/0.3)] flex items-center justify-center gap-2 transition-all"
                       >
                         {discussing ? (
                           <>
@@ -278,20 +279,20 @@ export default function OpportunityScannerPage() {
               )}
             </AnimatePresence>
 
-            <Card className="glass-card border-white/5 overflow-hidden">
-              <CardHeader className="p-6 border-b border-white/5">
-                <CardTitle className="text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+            <Card className="glass-card border-white/[0.08] overflow-hidden">
+              <CardHeader className="p-6 border-b border-white/[0.08] bg-white/[0.02]">
+                <CardTitle className="text-sm font-semibold text-foreground/90 tracking-wide flex items-center gap-2.5">
                   <Clock className="w-4 h-4 text-primary" /> My Notebook
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 space-y-4">
                 {logs.length === 0 ? (
-                  <p className="text-[10px] text-muted-foreground italic text-center py-4">No struggles saved yet.</p>
+                  <p className="text-sm text-muted-foreground italic text-center py-6">No struggles saved yet.</p>
                 ) : (
                   logs.map((log, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
-                      <p className="text-[11px] font-bold truncate pr-4">{log.title}</p>
-                      <Badge variant="ghost" className="text-[8px] opacity-50">SAVED</Badge>
+                    <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-white/[0.03] border border-white/[0.05] hover:border-white/[0.1] transition-all">
+                      <p className="text-[13px] font-medium text-foreground/90 truncate pr-4">{log.title}</p>
+                      <Badge variant="outline" className="text-[10px] font-medium tracking-wider bg-white/5 border-white/10">SAVED</Badge>
                     </div>
                   ))
                 )}

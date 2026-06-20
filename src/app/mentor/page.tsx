@@ -205,13 +205,13 @@ export default function MentorPage() {
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-card/30 backdrop-blur-md shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shadow-inner">
-              <Brain className="w-6 h-6" />
+              <Brain className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="text-sm font-bold tracking-tight">Master Mentor</h1>
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Oracle System Online</span>
+              <h1 className="text-base font-semibold tracking-tight text-foreground/90">Master Mentor</h1>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Oracle System Online</span>
               </div>
             </div>
           </div>
@@ -248,9 +248,9 @@ export default function MentorPage() {
               >
                 <Button 
                   onClick={handleNewChat}
-                  className="w-full h-10 border border-white/10 bg-white/5 hover:bg-white/10 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 rounded-xl mb-4 shrink-0 transition-all active:scale-95"
+                  className="w-full h-11 border border-white/10 bg-white/[0.02] hover:bg-white/[0.06] text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 rounded-xl mb-4 shrink-0 transition-all text-foreground/80 hover:text-foreground"
                 >
-                  <Plus className="w-4 h-4 text-accent" /> New Session
+                  <Plus className="w-4 h-4 text-primary" /> New Session
                 </Button>
                 
                 <ScrollArea className="flex-1 pr-1">
@@ -298,8 +298,8 @@ export default function MentorPage() {
                       <Sparkles className="w-8 h-8 text-primary/40" />
                     </div>
                     <div className="space-y-2 max-w-sm">
-                      <h3 className="text-lg font-bold">Forge Your Strategy</h3>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
+                      <h3 className="text-xl font-semibold text-foreground/90 tracking-tight">Forge Your Strategy</h3>
+                      <p className="text-sm text-muted-foreground/80 leading-relaxed">
                         "A founder's greatest asset is clarity of thought. Describe your current hurdle, and I will sequence a path through the noise."
                       </p>
                     </div>
@@ -313,7 +313,7 @@ export default function MentorPage() {
                         <button 
                           key={i}
                           onClick={() => { setInput(suggestion); }}
-                          className="text-left p-3 rounded-xl border border-white/5 bg-white/5 hover:border-primary/30 hover:bg-primary/5 transition-all text-[11px] font-medium"
+                          className="text-left p-3.5 rounded-xl border border-white/[0.05] bg-white/[0.02] hover:border-primary/30 hover:bg-primary/5 transition-all text-xs font-medium text-muted-foreground/90 hover:text-foreground/90"
                         >
                           {suggestion}
                         </button>
@@ -357,14 +357,14 @@ export default function MentorPage() {
                           </div>
 
                           <div className="grid sm:grid-cols-2 gap-4">
-                            <div className="space-y-3 p-4 rounded-xl bg-primary/[0.03] border border-primary/10">
-                              <div className="flex items-center gap-2 mb-2">
-                                <ListCheck className="w-3.5 h-3.5 text-primary" />
-                                <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Strategic Protocol</h4>
+                            <div className="space-y-3 p-5 rounded-2xl bg-primary/[0.03] border border-primary/10">
+                              <div className="flex items-center gap-2.5 mb-2 border-b border-primary/10 pb-2">
+                                <ListCheck className="w-4 h-4 text-primary" />
+                                <h4 className="text-[11px] font-semibold uppercase tracking-wider text-primary">Strategic Protocol</h4>
                               </div>
-                              <ul className="space-y-2">
+                              <ul className="space-y-2.5">
                                 {msg.data.actionSteps.map((step, si) => (
-                                  <li key={si} className="text-[11px] text-muted-foreground flex gap-2">
+                                  <li key={si} className="text-[13px] text-muted-foreground/90 flex gap-2.5 leading-relaxed">
                                     <span className="text-primary font-bold">{si+1}.</span>
                                     {step}
                                   </li>
@@ -372,20 +372,20 @@ export default function MentorPage() {
                               </ul>
                             </div>
                             
-                            <div className="space-y-3 p-4 rounded-xl bg-red-500/[0.03] border border-red-500/10">
-                              <div className="flex items-center gap-2 mb-2">
-                                <ShieldAlert className="w-3.5 h-3.5 text-red-500" />
-                                <h4 className="text-[10px] font-black uppercase tracking-widest text-red-500">Risk Mitigation</h4>
+                            <div className="space-y-3 p-5 rounded-2xl bg-red-500/[0.03] border border-red-500/10">
+                              <div className="flex items-center gap-2.5 mb-2 border-b border-red-500/10 pb-2">
+                                <ShieldAlert className="w-4 h-4 text-red-500" />
+                                <h4 className="text-[11px] font-semibold uppercase tracking-wider text-red-500">Risk Mitigation</h4>
                               </div>
-                              <p className="text-[11px] text-muted-foreground italic leading-relaxed">
+                              <p className="text-[13px] text-muted-foreground/90 italic leading-relaxed">
                                 {msg.data.riskAssessment}
                               </p>
                             </div>
                           </div>
 
-                          <div className="relative p-4 rounded-xl bg-accent/[0.03] border border-accent/10">
-                            <Quote className="absolute top-2 left-2 w-4 h-4 text-accent opacity-10 rotate-180" />
-                            <p className="text-[11px] font-headline font-bold text-accent pl-4">
+                          <div className="relative p-5 rounded-2xl bg-accent/[0.03] border border-accent/10">
+                            <Quote className="absolute top-3 left-3 w-5 h-5 text-accent opacity-10 rotate-180" />
+                            <p className="text-[13px] font-medium text-accent/90 pl-6 leading-relaxed italic">
                               {msg.data.philosophicalInsight}
                             </p>
                           </div>

@@ -131,30 +131,30 @@ export default function DashboardPage() {
         <motion.div 
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-6"
+          className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/[0.08] pb-6"
         >
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold uppercase tracking-widest text-primary/70">System Workspace</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="text-xs font-medium tracking-wide text-primary/80">System Workspace</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground">
+            <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground/90">
               Command Base — Level {state.level}
             </h1>
-            <p className="text-xs md:text-sm text-muted-foreground font-normal">
+            <p className="text-sm text-muted-foreground font-normal">
               Portfolio oversight and strategic cognitive profile.
             </p>
           </div>
 
-          <div className="flex items-center gap-4 text-xs md:text-sm bg-white/5 border border-white/5 px-4 py-2.5 rounded-xl">
+          <div className="flex items-center gap-5 text-sm bg-card/40 border border-white/[0.08] px-5 py-3 rounded-2xl shadow-sm backdrop-blur-xl">
             <div className="text-right">
-              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Experience Points</p>
+              <p className="text-xs text-muted-foreground font-medium tracking-wide">Experience Points</p>
               <p className="font-mono text-sm md:text-base font-semibold text-foreground mt-0.5">
-                {state.xp} <span className="text-muted-foreground font-normal">/ {xpToNext} XP</span>
+                {state.xp} <span className="text-muted-foreground/60 font-normal">/ {xpToNext} XP</span>
               </p>
             </div>
-            <div className="w-20 md:w-32">
-              <Progress value={progressValue} className="h-1.5 bg-white/10" />
+            <div className="w-24 md:w-32">
+              <Progress value={progressValue} className="h-2 bg-white/10" />
             </div>
           </div>
         </motion.div>
@@ -162,19 +162,19 @@ export default function DashboardPage() {
         {/* Stats Grid - Cleaner, Less Chunky */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           {[
-            { label: "Cash Balance", value: `$${state.cash?.toLocaleString() || '0'}`, icon: <DollarSign className="w-4 h-4" />, color: "text-emerald-500" },
-            { label: "Reputation Score", value: state.reputation || 0, icon: <Trophy className="w-4 h-4" />, color: "text-amber-500" },
-            { label: "Streak Record", value: `${state.streak || 7} Days`, icon: <Flame className="w-4 h-4" />, color: "text-orange-500" },
-            { label: "Active Ventures", value: "2 Companies", icon: <Building2 className="w-4 h-4" />, color: "text-blue-500" },
+            { label: "Cash Balance", value: `$${state.cash?.toLocaleString() || '0'}`, icon: <DollarSign className="w-4 h-4" />, color: "text-emerald-400", bg: "bg-emerald-400/10" },
+            { label: "Reputation Score", value: state.reputation || 0, icon: <Trophy className="w-4 h-4" />, color: "text-amber-400", bg: "bg-amber-400/10" },
+            { label: "Streak Record", value: `${state.streak || 7} Days`, icon: <Flame className="w-4 h-4" />, color: "text-orange-400", bg: "bg-orange-400/10" },
+            { label: "Active Ventures", value: "2 Companies", icon: <Building2 className="w-4 h-4" />, color: "text-primary", bg: "bg-primary/10" },
           ].map((stat, i) => (
-            <Card key={i} className="bg-card/30 border border-white/5 hover:border-white/10 transition-colors">
-              <CardContent className="p-4 md:p-5">
+            <Card key={i} className="glass-card transition-all hover:border-white/[0.15]">
+              <CardContent className="p-5">
                 <div className="flex justify-between items-start">
-                  <div className="space-y-1">
-                    <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">{stat.label}</p>
-                    <p className="text-lg md:text-2xl font-semibold tracking-tight text-foreground mt-1">{stat.value}</p>
+                  <div className="space-y-1.5">
+                    <p className="text-xs text-muted-foreground/80 font-medium tracking-wide">{stat.label}</p>
+                    <p className="text-xl md:text-2xl font-semibold tracking-tight text-foreground/90">{stat.value}</p>
                   </div>
-                  <div className={cn("p-1.5 rounded-lg bg-white/5 border border-white/5", stat.color)}>
+                  <div className={cn("p-2 rounded-xl border border-white/[0.05]", stat.bg, stat.color)}>
                     {stat.icon}
                   </div>
                 </div>
@@ -189,42 +189,44 @@ export default function DashboardPage() {
           <div className="lg:col-span-2 space-y-6">
             
             {/* Active Ventures Portfolio Table */}
-            <Card className="bg-card/20 border border-white/5">
+            <Card className="glass-card">
               <CardHeader className="pb-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <h2 className="text-sm font-semibold tracking-tight text-foreground">Venture Portfolio</h2>
-                    <p className="text-xs text-muted-foreground mt-0.5">Real-time status of your virtual business entities</p>
+                    <h2 className="text-base font-semibold tracking-tight text-foreground/90">Venture Portfolio</h2>
+                    <p className="text-sm text-muted-foreground mt-0.5">Real-time status of your virtual business entities</p>
                   </div>
-                  <Button asChild variant="outline" size="sm" className="h-8 text-xs border-white/5 hover:bg-white/5">
+                  <Button asChild variant="outline" size="sm" className="h-8 text-xs border-white/10 bg-white/[0.02] hover:bg-white/[0.05]">
                     <Link href="/company">Manage Ventures</Link>
                   </Button>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs border-collapse">
+                  <table className="w-full text-left text-sm border-collapse">
                     <thead>
-                      <tr className="border-b border-white/5 text-muted-foreground pb-2">
-                        <th className="font-medium pb-2 text-[10px] uppercase tracking-wider">Company</th>
-                        <th className="font-medium pb-2 text-[10px] uppercase tracking-wider">Type</th>
-                        <th className="font-medium pb-2 text-[10px] uppercase tracking-wider">Valuation</th>
-                        <th className="font-medium pb-2 text-[10px] uppercase tracking-wider">Monthly Rev</th>
-                        <th className="font-medium pb-2 text-[10px] uppercase tracking-wider">Status</th>
+                      <tr className="border-b border-white/[0.08] text-muted-foreground/70 pb-2">
+                        <th className="font-medium pb-3 pr-4">Company</th>
+                        <th className="font-medium pb-3 px-4">Type</th>
+                        <th className="font-medium pb-3 px-4">Valuation</th>
+                        <th className="font-medium pb-3 px-4">Monthly Rev</th>
+                        <th className="font-medium pb-3 pl-4 text-right">Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-white/[0.04]">
                       {ventures.map((venture, index) => (
-                        <tr key={index} className="hover:bg-white/[0.01] transition-colors">
-                          <td className="py-3 font-medium text-foreground flex items-center gap-2">
-                            <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
+                        <tr key={index} className="hover:bg-white/[0.02] transition-colors">
+                          <td className="py-4 pr-4 font-medium text-foreground/90 flex items-center gap-2.5">
+                            <div className="p-1.5 rounded-md bg-white/5 border border-white/5">
+                              <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
+                            </div>
                             {venture.name}
                           </td>
-                          <td className="py-3 text-muted-foreground">{venture.type}</td>
-                          <td className="py-3 font-mono text-foreground">{venture.valuation}</td>
-                          <td className="py-3 font-mono text-muted-foreground">{venture.revenue}</td>
-                          <td className="py-3">
-                            <span className={cn("inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium border", venture.statusColor)}>
+                          <td className="py-4 px-4 text-muted-foreground">{venture.type}</td>
+                          <td className="py-4 px-4 font-mono text-foreground/80">{venture.valuation}</td>
+                          <td className="py-4 px-4 font-mono text-muted-foreground">{venture.revenue}</td>
+                          <td className="py-4 pl-4 text-right">
+                            <span className={cn("inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium border", venture.statusColor)}>
                               {venture.status}
                             </span>
                           </td>
@@ -237,26 +239,27 @@ export default function DashboardPage() {
             </Card>
 
             {/* Founder Skill Profile */}
-            <Card className="bg-card/20 border border-white/5">
+            <Card className="glass-card">
               <CardHeader className="pb-4">
-                <h2 className="text-sm font-semibold tracking-tight text-foreground">Cognitive Skill Index</h2>
-                <p className="text-xs text-muted-foreground mt-0.5">Evaluated founder competence across six core strategic dimensions</p>
+                <h2 className="text-base font-semibold tracking-tight text-foreground/90">Cognitive Skill Index</h2>
+                <p className="text-sm text-muted-foreground mt-0.5">Evaluated founder competence across six core strategic dimensions</p>
               </CardHeader>
-              <CardContent className="flex justify-center items-center py-4">
-                <div className="h-64 md:h-80 w-full max-w-md">
+              <CardContent className="flex justify-center items-center py-6">
+                <div className="h-72 md:h-80 w-full max-w-md">
                   <ResponsiveContainer width="100%" height="100%">
-                    <RadarChart data={skillData} outerRadius="75%">
-                      <PolarGrid stroke="rgba(255, 255, 255, 0.05)" />
+                    <RadarChart data={skillData} outerRadius="70%">
+                      <PolarGrid stroke="rgba(255, 255, 255, 0.08)" />
                       <PolarAngleAxis 
                         dataKey="skill" 
-                        tick={{ fontSize: 9, fill: "#9ca3af", fontWeight: 500 }} 
+                        tick={{ fontSize: 11, fill: "#9ca3af", fontWeight: 500 }} 
                       />
                       <Radar
                         name="Competence"
                         dataKey="value"
-                        stroke="#e2e8f0"
-                        fill="#ffffff"
-                        fillOpacity={0.06}
+                        stroke="hsl(var(--primary))"
+                        strokeWidth={2}
+                        fill="hsl(var(--primary))"
+                        fillOpacity={0.15}
                       />
                     </RadarChart>
                   </ResponsiveContainer>
@@ -265,28 +268,28 @@ export default function DashboardPage() {
             </Card>
 
             {/* Milestones & Activity */}
-            <Card className="bg-card/20 border border-white/5">
-              <CardHeader className="pb-2">
-                <h2 className="text-sm font-semibold tracking-tight text-foreground">Recent Activity Logs</h2>
-                <p className="text-xs text-muted-foreground mt-0.5">Audit log of actions, level increases, and business occurrences</p>
+            <Card className="glass-card">
+              <CardHeader className="pb-4">
+                <h2 className="text-base font-semibold tracking-tight text-foreground/90">Recent Activity Logs</h2>
+                <p className="text-sm text-muted-foreground mt-0.5">Audit log of actions, level increases, and business occurrences</p>
               </CardHeader>
-              <CardContent className="pt-4">
-                <div className="space-y-4 relative before:absolute before:inset-y-0 before:left-3.5 before:w-px before:bg-white/5">
+              <CardContent className="pt-2">
+                <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-[15px] before:w-px before:bg-white/[0.08]">
                   {timelineEvents.map((event, index) => (
-                    <div key={index} className="flex gap-4 relative items-start text-xs">
-                      <div className="w-7 h-7 rounded-full bg-card border border-white/5 flex items-center justify-center flex-shrink-0 z-10">
+                    <div key={index} className="flex gap-5 relative items-start text-sm">
+                      <div className="w-8 h-8 rounded-full bg-card border border-white/[0.1] flex items-center justify-center flex-shrink-0 z-10 shadow-sm">
                         {event.icon}
                       </div>
-                      <div className="space-y-0.5 flex-1 min-w-0">
-                        <div className="flex justify-between items-center gap-2">
-                          <p className="font-medium text-foreground truncate">{event.title}</p>
-                          <span className="font-mono text-[10px] text-emerald-500 bg-emerald-500/10 px-1 rounded flex-shrink-0">
+                      <div className="space-y-1 flex-1 min-w-0 pt-1">
+                        <div className="flex justify-between items-start gap-2">
+                          <p className="font-medium text-foreground/90">{event.title}</p>
+                          <span className="font-mono text-xs font-semibold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-md flex-shrink-0">
                             {event.xp}
                           </span>
                         </div>
-                        <p className="text-muted-foreground leading-normal">{event.subtitle}</p>
-                        <p className="text-[10px] text-muted-foreground/50 flex items-center gap-1 mt-1">
-                          <Clock className="w-3 h-3" />
+                        <p className="text-muted-foreground/80 leading-relaxed text-[13px]">{event.subtitle}</p>
+                        <p className="text-xs text-muted-foreground/50 flex items-center gap-1.5 pt-1">
+                          <Clock className="w-3.5 h-3.5" />
                           {event.time}
                         </p>
                       </div>
@@ -302,53 +305,53 @@ export default function DashboardPage() {
           <div className="space-y-6">
 
             {/* Quick Actions */}
-            <Card className="bg-card/20 border border-white/5">
+            <Card className="glass-card">
               <CardHeader className="pb-4">
-                <h2 className="text-sm font-semibold tracking-tight text-foreground">Strategic Gateways</h2>
-                <p className="text-xs text-muted-foreground mt-0.5">Launch modules to level up skills and grow reserves</p>
+                <h2 className="text-base font-semibold tracking-tight text-foreground/90">Strategic Gateways</h2>
+                <p className="text-sm text-muted-foreground mt-0.5">Launch modules to level up skills and grow reserves</p>
               </CardHeader>
-              <CardContent className="space-y-2">
-                <Button asChild className="w-full justify-between h-11 text-xs font-medium bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-colors px-4">
+              <CardContent className="space-y-2.5">
+                <Button asChild className="w-full justify-between h-12 text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_15px_rgba(var(--primary)/0.3)] transition-all px-4 rounded-xl">
                   <Link href="/simulation" className="flex items-center justify-between w-full">
                     <span>Enter CEO Simulator</span>
-                    <Rocket className="w-3.5 h-3.5" />
+                    <Rocket className="w-4 h-4" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" className="w-full justify-between h-11 text-xs font-medium border-white/5 hover:bg-white/5 text-foreground rounded-lg transition-colors px-4">
+                <Button asChild variant="outline" className="w-full justify-between h-12 text-sm font-medium border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.06] text-foreground transition-colors px-4 rounded-xl">
                   <Link href="/pitch-arena" className="flex items-center justify-between w-full">
                     <span>Practice Board Pitch</span>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground" />
+                    <ArrowUpRight className="w-4 h-4 text-muted-foreground" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" className="w-full justify-between h-11 text-xs font-medium border-white/5 hover:bg-white/5 text-foreground rounded-lg transition-colors px-4">
+                <Button asChild variant="outline" className="w-full justify-between h-12 text-sm font-medium border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.06] text-foreground transition-colors px-4 rounded-xl">
                   <Link href="/opportunity-scanner" className="flex items-center justify-between w-full">
                     <span>Opportunity Scanner</span>
-                    <Globe className="w-3.5 h-3.5 text-muted-foreground" />
+                    <Globe className="w-4 h-4 text-muted-foreground" />
                   </Link>
                 </Button>
               </CardContent>
             </Card>
 
             {/* Strategic Objectives (OKRs) */}
-            <Card className="bg-card/20 border border-white/5">
+            <Card className="glass-card">
               <CardHeader className="pb-4">
-                <h2 className="text-sm font-semibold tracking-tight text-foreground">OKR Milestones</h2>
-                <p className="text-xs text-muted-foreground mt-0.5">Active objectives for your current level</p>
+                <h2 className="text-base font-semibold tracking-tight text-foreground/90">OKR Milestones</h2>
+                <p className="text-sm text-muted-foreground mt-0.5">Active objectives for your current level</p>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
                 {okrs.map((okr, index) => (
-                  <div key={index} className="space-y-1.5 text-xs">
+                  <div key={index} className="space-y-2 text-sm">
                     <div className="flex justify-between items-start gap-2">
                       <div>
-                        <p className="font-medium text-foreground">{okr.title}</p>
-                        <p className="text-[10px] text-muted-foreground">{okr.description}</p>
+                        <p className="font-medium text-foreground/90">{okr.title}</p>
+                        <p className="text-xs text-muted-foreground/80 mt-0.5">{okr.description}</p>
                       </div>
-                      <span className="font-mono text-[10px] text-muted-foreground">
+                      <span className="font-mono text-xs font-medium text-foreground/70">
                         {okr.progress}%
                       </span>
                     </div>
-                    <Progress value={okr.progress} className="h-1 bg-white/5" />
-                    <div className="flex justify-between text-[9px] text-muted-foreground/60 font-mono">
+                    <Progress value={okr.progress} className="h-1.5 bg-white/[0.05]" />
+                    <div className="flex justify-between text-[11px] text-muted-foreground/60 font-mono tracking-wide">
                       <span>Val: {okr.current}</span>
                       <span>Target: {okr.target}</span>
                     </div>
@@ -358,22 +361,24 @@ export default function DashboardPage() {
             </Card>
 
             {/* Live Market Insights Feed */}
-            <Card className="bg-card/20 border border-white/5">
+            <Card className="glass-card">
               <CardHeader className="pb-4">
-                <h2 className="text-sm font-semibold tracking-tight text-foreground">Market Ticker</h2>
-                <p className="text-xs text-muted-foreground mt-0.5">Macro trends impacting valuations and margins</p>
+                <h2 className="text-base font-semibold tracking-tight text-foreground/90">Market Ticker</h2>
+                <p className="text-sm text-muted-foreground mt-0.5">Macro trends impacting valuations and margins</p>
               </CardHeader>
               <CardContent className="space-y-3">
                 {marketAlerts.map((alert, index) => (
-                  <div key={index} className="p-3 bg-white/[0.02] border border-white/5 rounded-lg flex items-start gap-2.5 text-xs">
-                    {alert.severity === "warning" ? (
-                      <AlertCircle className="w-4 h-4 text-amber-500/80 shrink-0 mt-0.5" />
-                    ) : (
-                      <TrendingUp className="w-4 h-4 text-blue-500/80 shrink-0 mt-0.5" />
-                    )}
-                    <div className="space-y-0.5">
-                      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{alert.type}</p>
-                      <p className="text-muted-foreground leading-normal text-[11px]">{alert.message}</p>
+                  <div key={index} className="p-3.5 bg-white/[0.02] border border-white/[0.05] rounded-xl flex items-start gap-3 text-sm transition-colors hover:bg-white/[0.04]">
+                    <div className={cn("p-1.5 rounded-lg shrink-0", alert.severity === "warning" ? "bg-amber-500/10" : "bg-blue-500/10")}>
+                      {alert.severity === "warning" ? (
+                        <AlertCircle className="w-4 h-4 text-amber-400" />
+                      ) : (
+                        <TrendingUp className="w-4 h-4 text-blue-400" />
+                      )}
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">{alert.type}</p>
+                      <p className="text-muted-foreground/90 leading-relaxed text-[13px]">{alert.message}</p>
                     </div>
                   </div>
                 ))}
