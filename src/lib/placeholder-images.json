@@ -25,22 +25,46 @@
       "imageHint": "gold medal"
     },
     {
+      "id": "founder-vision",
+      "description": "Visionary founder shaping the future",
+      "imageUrl": "/images/academy/founder_vision.png",
+      "imageHint": "founder vision workspace"
+    },
+    {
       "id": "startup-formula",
       "description": "Simple Startup Formula: Outcome = Idea x Product x Execution x Team x Luck",
-      "imageUrl": "https://picsum.photos/seed/startup-formula/800/600",
+      "imageUrl": "/images/academy/startup_formula.png",
       "imageHint": "startup formula"
     },
     {
       "id": "growth-graph",
       "description": "Startup Growth Curve vs Traditional Business",
-      "imageUrl": "https://picsum.photos/seed/growth-curve/800/600",
+      "imageUrl": "/images/academy/growth_graph.png",
       "imageHint": "growth graph"
     },
     {
       "id": "market-dynamics",
       "description": "Market Monopoly vs Competition Dynamics",
-      "imageUrl": "https://picsum.photos/seed/market-dyn/800/600",
+      "imageUrl": "/images/academy/market_dynamics.png",
       "imageHint": "market diagram"
+    },
+    {
+      "id": "team-hiring",
+      "description": "Strong Teams vs Toxic Teams",
+      "imageUrl": "/images/academy/team_hiring.png",
+      "imageHint": "network diagram"
+    },
+    {
+      "id": "counterintuitive-mindset",
+      "description": "The Counterintuitive Startup Mindset",
+      "imageUrl": "/images/academy/counterintuitive_mindset.png",
+      "imageHint": "brain breaking out of box"
+    },
+    {
+      "id": "consumer-mind",
+      "description": "Consumer Mind and the Magic Moment",
+      "imageUrl": "/images/academy/consumer_mind.png",
+      "imageHint": "user radar"
     }
   ]
 }

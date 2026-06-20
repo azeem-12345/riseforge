@@ -224,6 +224,7 @@ Top startups all had 2-3 founders. One founder is risky. Five is too many.
 
 ## Traits of Great Co-Founders and Early Hires
 Look for people who are relentlessly resourceful. They solve problems no matter what.
+!!IMAGE:team-hiring!!
 Great co-founders stay calm under pressure, make fast decisions, think creatively, and stay tough.
 Technical skills matter most for software startups. Non-technical founders need technical partners.
 Intelligence is important, but toughness and calmness matter even more.
@@ -378,6 +379,7 @@ Ignore competitor press. Focus on your shipped product.
     theory: `
 ## Introduction
 This course gives advice for young adults, especially those interested in startups. It treats startup building like learning to ski. Your first instincts are often wrong and dangerous.
+!!IMAGE:counterintuitive-mindset!!
 You must unlearn natural habits and learn new ones. Pause before acting on gut feelings.
 
 ## Founders Ignore Good Advice
@@ -521,6 +523,7 @@ College plan: Follow curiosity. Build expertise without startup pressure.
     theory: `
 ## THE PSYCHOLOGY OF STARTUPS
 Building a product is only half the battle. The other half is understanding why people use things. Psychology is the foundation of growth.
+!!IMAGE:consumer-mind!!
 
 ## THE POWER OF FOCUS
 Beginners try to please everyone. Experts focus on a tiny group. If you build for everyone, you build for no one. Find 100 people who love you. Their passion will drive your growth.
