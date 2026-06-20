@@ -65,6 +65,36 @@
       "description": "Consumer Mind and the Magic Moment",
       "imageUrl": "/images/academy/consumer_mind.png",
       "imageHint": "user radar"
+    },
+    {
+      "id": "financial-fortitude",
+      "description": "Financial Fortitude: Burn Rate and Cash Flow Timeline",
+      "imageUrl": "/images/academy/financial_fortitude.png",
+      "imageHint": "financial chart diagram"
+    },
+    {
+      "id": "crossing-chasm",
+      "description": "Crossing the Chasm: Mainstream Market Adoption",
+      "imageUrl": "/images/academy/crossing_chasm.png",
+      "imageHint": "gap diagram"
+    },
+    {
+      "id": "investor-psychology",
+      "description": "Investor Psychology and Fundraising Dynamics",
+      "imageUrl": "/images/academy/investor_psychology.png",
+      "imageHint": "investor brain diagram"
+    },
+    {
+      "id": "trough-of-sorrow",
+      "description": "The Trough of Sorrow: Surviving the Startup Grind",
+      "imageUrl": "/images/academy/trough_of_sorrow.png",
+      "imageHint": "trough line graph"
+    },
+    {
+      "id": "exit-endgame",
+      "description": "The Endgame: IPOs and M&A Exits",
+      "imageUrl": "/images/academy/exit_endgame.png",
+      "imageHint": "gateway glowing diagram"
     }
   ]
 }

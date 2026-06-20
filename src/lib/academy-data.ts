@@ -677,7 +677,7 @@ Products that reach a billion valuation turn their users into a cult.
     title: 'Vanities vs Reality',
     objective: 'Master the numbers that matter and avoid the traps of fake growth.',
     theory: `
-## INTRODUCTION TO STARTUP FINANCE
+\n!!IMAGE:financial-fortitude!!\n\n## INTRODUCTION TO STARTUP FINANCE
 Many founders think finance is about complex spreadsheets and accounting. In a startup, finance is much simpler: It is about survival.
 
 ## VANITY METRICS VS. REALITY
@@ -776,7 +776,7 @@ You must become obsessed with your spreadsheets. If you run out of cash, the gam
     title: 'Growth Fundamentals',
     objective: 'Master the strategic principles of sustainable growth and the North Star metric.',
     theory: `
-## Retention First
+\n!!IMAGE:growth-graph!!\n\n## Retention First
 Retention is the single most important growth metric. Without users returning, all acquisition is wasted. Retention curves that flatten above zero signal product-market fit and business viability.
 - Graph daily active users post-signup
 - E-commerce: 20-30% monthly retention works
@@ -903,7 +903,7 @@ Growth is not marketing. Growth is a cross-functional engineering discipline.
     title: 'Building Strong Teams and Culture',
     objective: 'Learn how to create a high-performance startup culture, hire your foundation team, and scale through transparency.',
     theory: `
-## Lesson 1: What Is Company Culture and Why It Matters
+\n!!IMAGE:team-hiring!!\n\n## Lesson 1: What Is Company Culture and Why It Matters
 Company culture is the invisible force that shapes how your team works together every day. Think of it as the "family rules" in a business: it decides if people collaborate happily or compete selfishly. Without a strong culture, even smart people can cause chaos as your startup grows from 2 to 200 employees. The good news? You can build it intentionally from the start.
 A solid culture solves the "bandwidth problem"—founders can't oversee every choice forever. Instead, culture becomes a guide that lets teams decide on their own while staying true to your vision.
 Four pillars to build your culture:
@@ -1036,7 +1036,7 @@ Your culture must be intensely unique. It should repel average people and attrac
     title: 'Principled Command: Multi-Perspective Decision-Making',
     objective: 'Learn to make fair, robust decisions by mapping multiple viewpoints—from employees to customers—to build trust and a strong company culture.',
     theory: `
-## Lesson 1: Why Multi-Perspective Thinking Wins
+\n!!IMAGE:founder-vision!!\n\n## Lesson 1: Why Multi-Perspective Thinking Wins
 Great decisions come from seeing how they affect everyone—not just you. Leaders must think about employees, teams, customers, and even those not in the meeting. This skill is tough for CEOs because pressure pushes quick choices. But skipping it causes big problems like low morale or unfairness.
 When you pause and map all views, decisions stick better. Teams trust you more. Culture grows strong. For example, a CEO might cut costs fast. But what about workers' fears? Thinking wider finds win-wins.
 
@@ -1143,7 +1143,7 @@ As a founder, you are paid to make the 3 or 4 decisions a year that dictate the 
     title: 'How to Hire and Execute',
     objective: 'Learn to pick perfect co-founders, hire smart early employees, manage equity, and master startup execution with focus and intensity.',
     theory: `
-## Lesson 1: Pick Perfect Co-Founders First
+\n!!IMAGE:team-hiring!!\n\n## Lesson 1: Pick Perfect Co-Founders First
 Co-founders make or break startups. Choose wrong, and tension kills the company fast. Pick people you know well—years of trust beats random picks. Data shows startups adding strangers after starting often fail within a year.
 Ideal co-founders stay calm in chaos, solve problems creatively, and have key skills like coding for tech firms. Think James Bond: Cool, decisive, ready for anything. Aim for two or three founders—solo or remote pairs struggle with speed and talk.
 Top traits:
@@ -1279,7 +1279,7 @@ When you hit 50 employees, you can no longer interview everyone. You must build 
     week: 10,
     title: 'Startup Finance and Legal Mechanics',
     objective: 'Master the essential legal and financial mechanics to build a solid startup foundation, from incorporation to employee management.',
-    theory: `## Lesson 1: Form Your Startup Right
+    theory: `\n!!IMAGE:financial-fortitude!!\n\n## Lesson 1: Form Your Startup Right
 A startup needs its own legal identity to shield founders from personal risks like lawsuits or debts. Delaware stands out as the top choice—its laws are clear, and investors love it. One company picked wrong and paid $500,000 to fix it. Keep formation simple: File papers, set bylaws, name a board, and shift all IP like code to the company.
 Use tools like Clerky for quick setup. This protects you and builds trust fast.
 - Choose Delaware C-Corp.
@@ -1392,7 +1392,7 @@ Startup legal mistakes do not kill you on day one; they kill you three years lat
     title: 'Early Startup Tactics',
     objective: 'Learn to validate ideas cheaply, find your first users with manual effort, and turn them into loyal champions before scaling.',
     theory: `
-## Lesson 1: Validate Ideas with Quick Tests
+\n!!IMAGE:market-dynamics!!\n\n## Lesson 1: Validate Ideas with Quick Tests
 Test your business idea fast before building anything fancy. DoorDash started with a simple landing page (paltodely.com) listing menus and a phone number. No app, no marketing—first order came in hours. This proved people wanted local delivery.
 Interview customers first. DoorDash talked to 150 small businesses and found the same pain: no reliable drivers. Chloe's macaroon shop couldn't deliver—huge gap.
 - Build minimal page or PDF.
@@ -1517,7 +1517,7 @@ In the early days, you have no money and no brand. You must use asymmetric tacti
     title: 'From Zero to Many Users',
     objective: 'Learn how to acquire your first users with creative, manual tactics and iterate quickly based on their feedback to achieve growth.',
     theory: `
-## Lesson 1: Focus Time and Avoid Common Traps
+\n!!IMAGE:crossing-chasm!!\n\n## Lesson 1: Focus Time and Avoid Common Traps
 Startups fail when founders build alone without feedback, then launch big hoping for viral success. This wastes time and money on users who leave fast. Instead, use focused time blocks—no distractions—to dive deep into your idea. Short scattered sessions lose momentum due to mental switching costs.
 Pick problems you're passionate about that others share. Define your problem in one clear sentence first.
 - Avoid building in secret.
@@ -1648,7 +1648,7 @@ The jump from visionary early adopters to pragmatic mainstream users destroys 90
     title: 'Mastering Growth: Retention & Virality',
     objective: 'Learn the core principles of sustainable growth, focusing on retention, product-market fit, and viral mechanics.',
     theory: `
-## Lesson 1: Retention Beats All Growth Tactics
+\n!!IMAGE:growth-graph!!\n\n## Lesson 1: Retention Beats All Growth Tactics
 Growth starts with retention—users coming back. Without it, new users leak away fast. A great product pulls customers who spread the word and stay. Facebook grew because users checked it daily. The retention curve shows the health of your product: it's a graph of the percentage of active users by days since they joined. A flat line above zero means you have product-market fit. If it drops to zero, you must fix the product first before trying to grow.
 - E-commerce can succeed with 20-30% monthly retention.
 - Social apps often need 80% or higher.
@@ -1768,7 +1768,7 @@ Virality is an engineering problem, not a marketing accident.
     title: 'Mastering Growth Hacking and Retention',
     objective: 'Learn advanced growth strategies focusing on data-driven retention, viral mechanics, and scalable acquisition channels to achieve sustainable, exponential growth.',
     theory: `
-## Lesson 1: Retention - The Growth Foundation
+\n!!IMAGE:market-dynamics!!\n\n## Lesson 1: Retention - The Growth Foundation
 Growth fails without users returning regularly. A great product naturally attracts customers, who then tell friends and keep using it - creating a self-sustaining cycle. Facebook's daily habit made growth automatic; users couldn't quit checking. Retention beats acquisition costs 5-to-1 long-term.
 
 Plot your retention curve: % of monthly active users (MAUs) vs. days since they joined. Healthy products flatten above zero - showing steady engagement. Curves crashing to zero scream "fix the product now."
@@ -1929,7 +1929,7 @@ Growth hacking is the systematic testing of the entire user lifecycle.
     week: 15,
     title: 'Operating a Company: From Chaos to Machine',
     objective: 'Learn to transform a chaotic startup into a high-performance machine by mastering people complexity, delegation, ruthless editing, and data-driven transparency.',
-    theory: `## Lesson 1: People Complexity Makes Companies Hard
+    theory: `\n!!IMAGE:investor-psychology!!\n\n## Lesson 1: People Complexity Makes Companies Hard
 Building products seems simple on paper, but companies deal with irrational humans packed together 12+ hours daily. Products follow physics; people bring emotions, egos, misfires. Operating means managing this mess while keeping the engine running. Early companies look like duct-taped disasters needing 80-hour hero weeks. Goal: Build a "high-performance machine" so smooth Martians could run it for months unnoticed. Warren Buffett: Make it idiot-proof - eventually idiots will.
 
 ## Lesson 2: Leader's Job - Maximize Output
@@ -2030,7 +2030,7 @@ Fundraising is a brutal psychological war. You must project inevitable success.
     week: 16,
     title: 'Build Winning Enterprise Software Companies',
     objective: 'Learn why enterprise software is a massive opportunity and how to build a winning company by finding a wedge, exploiting incumbent weaknesses, and partnering with early adopters.',
-    theory: `## Lesson 1: Enterprise Beats Consumer - Massive Opportunity
+    theory: `\n!!IMAGE:crossing-chasm!!\n\n## Lesson 1: Enterprise Beats Consumer - Massive Opportunity
 Enterprise software crushes consumer in scale. Annual spend: $3.7 trillion vs consumer apps + ads at $170 billion. Box serves 240k businesses, 27M users, 99% Fortune 500 (minus Microsoft). Every industry needs tech now - magical timing.
 Consumer fun but hard to monetize. Enterprise "hard" but pays reliably. Box started 2004 solving college file sharing pains - 50MB email limits, barren internet.
 | Market truth | |
@@ -2199,7 +2199,7 @@ Selling to Fortune 500 companies is completely different from selling to consume
     title: 'Build Category-Defining IoT Products',
     objective: 'Learn how to build category-defining IoT products by mastering full-stack development, a phased creation process, and deep user behavior research.',
     theory: `
-## Lesson 1: Wearables - The IoT Context Brain
+\n!!IMAGE:trough-of-sorrow!!\n\n## Lesson 1: Wearables - The IoT Context Brain
 IoT today is a fragmented mess of device apps that don't talk to each other. The solution is using wearables as context engines. With their always-on sensors reading heart rate, respiration, and mood, they can tell your thermostat "the user is stressed, cool the room," or instruct your car to "play calming music." This company pioneered this pre-IoT buzz, evolving from headsets to wearable computers, then Bluetooth speakers, and finally to health wearables. A full-stack approach is necessary: hardware, software, and data must work together as one seamless system.
 Why wearables rule:
 - They are worn 24/7, unlike external devices.
@@ -2346,7 +2346,7 @@ After the initial launch buzz fades, you enter a multi-year period of grinding w
     week: 18,
     title: 'Scaling from Chaos to a Machine',
     objective: 'Learn to transition from a chaotic early-stage startup to a scalable, high-performance organization by mastering management, documentation, and founder psychology for the long term.',
-    theory: `## Lesson 1: Management Breaks at 25 Employees
+    theory: `\n!!IMAGE:team-hiring!!\n\n## Lesson 1: Management Breaks at 25 Employees
 Flat structures rule from 0-20 people, where everyone can report directly to the founder. However, once a company hits 25 or more employees, this system shatters, and chaos ensues. To prevent this, every person needs exactly one manager. Avoid matrix management or dual reporting structures, as they kill productivity and create confusion. At this stage, the founder's job must shift from just building the product to building the company itself. Keep innovation in your product and business model, not your org chart.
 Signs you need to change:
 - Widespread confusion about who to ask for help.
@@ -2477,7 +2477,7 @@ The leadership team that got you from $0 to $1M ARR will rarely be the same team
     title: 'Master User Interviews Like Twitch',
     objective: 'Learn how to conduct effective user interviews to uncover deep user needs, validate ideas, and build products customers will pull from you, inspired by the growth of Twitch.',
     theory: `
-## Lesson 1: User Interviews Beat Being Your Own User
+\n!!IMAGE:exit-endgame!!\n\n## Lesson 1: User Interviews Beat Being Your Own User
 Kiko failed because of no user talks. Justin.tv grew as founders were users (a cheat code), but stalled. Twitch exploded after broadcaster interviews revealed gold. Analytics miss the root problems that users reveal. The truth is that relying on your own experience limits your ability to scale. Talk to real customers early and often.
 Wrong path to take:
 - Build only what you want.
