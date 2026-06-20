@@ -148,23 +148,25 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                 {/* Step 1: Theory (PDF / Paper Style) */}
                 {currentStep === 'theory' && (
                   <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-2 duration-1000">
-                    <Card className="bg-white text-slate-900 border border-slate-200 shadow-[0_10px_40px_rgba(0,0,0,0.3)] rounded-sm overflow-hidden flex flex-col relative mx-auto">
-                      {/* Paper Accent */}
-                      <div className="absolute top-0 left-0 w-full h-1 bg-primary/20" />
+                    <Card className="glass-card shadow-2xl rounded-2xl overflow-hidden flex flex-col relative mx-auto border-white/[0.08]">
+                      {/* Premium Accent */}
+                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary opacity-80" />
                       
-                      <CardContent className="p-4 md:p-10 space-y-4 flex-1 font-serif">
-                        <div className="space-y-2 border-b border-slate-100 pb-6">
-                          <p className="text-[7px] font-black uppercase tracking-[0.4em] text-primary/60 mb-1">Executive Briefing • Week {lesson.week}</p>
-                          <h2 className="text-xl md:text-2xl font-extrabold tracking-tighter text-slate-900 leading-tight">{lesson.title}</h2>
-                          <p className="text-[12px] font-medium text-slate-500 leading-relaxed max-w-3xl">{lesson.objective}</p>
+                      <CardContent className="p-6 md:p-12 space-y-4 flex-1">
+                        <div className="space-y-3 border-b border-white/[0.08] pb-8">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80 mb-1 flex items-center gap-2">
+                            <Sparkles className="w-3 h-3" /> Executive Briefing • Week {lesson.week}
+                          </p>
+                          <h2 className="text-2xl md:text-4xl font-semibold tracking-tight text-foreground/90 leading-tight">{lesson.title}</h2>
+                          <p className="text-sm font-medium text-muted-foreground/80 leading-relaxed max-w-3xl">{lesson.objective}</p>
                         </div>
 
-                        <div className="space-y-4">
-                           <div className="text-[12px] leading-[1.6] text-slate-700 space-y-4">
+                        <div className="space-y-6 pt-4">
+                           <div className="text-sm leading-relaxed text-foreground/80 space-y-6">
                              {lesson.theory.split('\n').map((line, i) => {
                                if (line.startsWith('## ')) {
                                  return (
-                                   <h3 key={i} className="text-sm font-black text-slate-900 mt-8 mb-3 tracking-tight uppercase font-sans border-l-4 border-primary pl-4">
+                                   <h3 key={i} className="text-lg font-semibold text-primary/90 mt-10 mb-4 tracking-wide border-l-2 border-primary pl-4">
                                      {line.replace('## ', '')}
                                    </h3>
                                  )
@@ -175,17 +177,18 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                                  const imageData = PlaceHolderImages.find(img => img.id === imageId)
                                  if (imageData) {
                                    return (
-                                     <div key={i} className="my-6 flex flex-col items-center">
-                                       <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-slate-100 shadow-sm bg-slate-50 max-w-2xl mx-auto">
+                                     <div key={i} className="my-10 flex flex-col items-center">
+                                       <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_0_40px_rgba(var(--primary)/0.15)] max-w-4xl mx-auto group">
+                                         <div className="absolute inset-0 bg-primary/5 group-hover:bg-transparent transition-colors z-10 pointer-events-none" />
                                          <Image 
                                            src={imageData.imageUrl} 
                                            alt={imageData.description}
                                            fill
-                                           className="object-contain p-2"
+                                           className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
                                            data-ai-hint={imageData.imageHint}
                                          />
                                        </div>
-                                       <p className="text-[7px] uppercase font-bold text-slate-400 mt-2 tracking-widest">{imageData.description}</p>
+                                       <p className="text-[10px] font-semibold text-muted-foreground mt-4 tracking-widest uppercase">{imageData.description}</p>
                                      </div>
                                    )
                                  }
@@ -195,9 +198,9 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                                  const cells = line.split('|').filter(c => c.trim() !== '').map(c => c.trim());
                                  if (cells.length === 0 || line.includes('---')) return null;
                                  return (
-                                   <div key={i} className="grid grid-cols-2 gap-6 py-3 border-b border-slate-100 last:border-0 font-sans">
-                                     <span className="text-[11px] font-black text-slate-900 uppercase tracking-tight">{cells[0]}</span>
-                                     <span className="text-[11px] text-slate-600 font-medium">{cells[1]}</span>
+                                   <div key={i} className="grid grid-cols-[1fr_2fr] gap-6 py-4 border-b border-white/[0.05] last:border-0">
+                                     <span className="text-xs font-semibold text-primary/80 uppercase tracking-wider">{cells[0]}</span>
+                                     <span className="text-[13px] text-muted-foreground/90 font-medium leading-relaxed">{cells[1]}</span>
                                    </div>
                                  )
                                }
@@ -208,28 +211,28 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                            </div>
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-8 pt-8 border-t border-slate-100 font-sans">
-                          <div className="space-y-3">
-                             <h3 className="text-[8px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                               <Lightbulb className="w-3 h-3 text-primary" /> Case Examples
+                        <div className="grid md:grid-cols-2 gap-8 pt-10 border-t border-white/[0.08] mt-8">
+                          <div className="space-y-4">
+                             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/80 flex items-center gap-2">
+                               <Lightbulb className="w-3.5 h-3.5 text-primary" /> Case Examples
                              </h3>
-                             <ul className="space-y-3">
+                             <ul className="space-y-4">
                                {lesson.examples.map((ex, i) => (
-                                 <li key={i} className="text-[10px] text-slate-600 border-l-2 border-primary/10 pl-4 py-0.5 italic leading-relaxed">
+                                 <li key={i} className="text-sm text-foreground/80 border-l-2 border-primary/20 pl-4 py-1 italic leading-relaxed bg-white/[0.01] rounded-r-lg">
                                    {ex}
                                  </li>
                                ))}
                              </ul>
                           </div>
-                          <div className="space-y-3">
-                             <h3 className="text-[8px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                               <Zap className="w-3 h-3 text-primary" /> Core Terminology
+                          <div className="space-y-4">
+                             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/80 flex items-center gap-2">
+                               <Zap className="w-3.5 h-3.5 text-primary" /> Core Terminology
                              </h3>
-                             <div className="space-y-3">
+                             <div className="space-y-4">
                                {lesson.vocabulary.map((v, i) => (
-                                 <div key={i} className="text-[10px]">
-                                   <span className="font-bold text-slate-900 mr-2">{v.word}:</span>
-                                   <span className="text-slate-500">{v.definition}</span>
+                                 <div key={i} className="text-sm bg-white/[0.02] p-3 rounded-xl border border-white/[0.05]">
+                                   <span className="font-semibold text-primary/90 block mb-1">{v.word}</span>
+                                   <span className="text-muted-foreground/80 leading-relaxed block">{v.definition}</span>
                                  </div>
                                ))}
                            </div>
@@ -238,7 +241,7 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                       </CardContent>
                       
                       {/* Footer Decoration */}
-                      <div className="p-4 border-t border-slate-50 bg-slate-50/50 flex justify-between items-center text-[7px] font-bold text-slate-400 uppercase tracking-widest font-sans">
+                      <div className="p-5 border-t border-white/[0.05] bg-black/20 flex justify-between items-center text-[9px] font-semibold text-muted-foreground/60 uppercase tracking-widest">
                         <span>RiseForge Academy Internal Document</span>
                         <span>CONFIDENTIAL • FOR EDUCATIONAL USE</span>
                       </div>
