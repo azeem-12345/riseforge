@@ -1,7 +1,7 @@
 
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { 
   LayoutDashboard, 
@@ -25,6 +25,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { useUser } from '@/firebase'
 
 const navItems = [
   { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard', key: 'dashboard' },
@@ -39,6 +40,21 @@ export default function GameShell({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const { state } = useGameState()
   const [open, setOpen] = useState(false)
+  const { user, isLoading } = useUser()
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/auth')
+    }
+  }, [user, isLoading, router])
+
+  if (isLoading || !user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <p className="text-sm font-sans font-medium text-muted-foreground animate-pulse">Verifying credentials...</p>
+      </div>
+    )
+  }
 
   const handleNavClick = (item: typeof navItems[0]) => {
     if (!isModuleUnlocked(item.key)) return;

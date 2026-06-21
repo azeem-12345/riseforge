@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Rocket, Mail, Lock, ArrowRight, AlertTriangle } from 'lucide-react';
@@ -10,11 +9,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { motion } from 'framer-motion';
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+  signInWithPopup
 } from 'firebase/auth';
-import { initializeFirebase } from '@/firebase';
+import { initializeFirebase, useUser } from '@/firebase';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -25,6 +26,14 @@ export default function AuthPage() {
   const router = useRouter();
 
   const { auth } = initializeFirebase();
+  const { user, isLoading } = useUser();
+
+  // Redirect to dashboard if user is already logged in
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.push('/dashboard');
+    }
+  }, [user, isLoading, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,11 +49,47 @@ export default function AuthPage() {
         router.push('/onboarding');
       }
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "An authentication error occurred.");
     } finally {
       setLoading(false);
     }
   };
+
+  const handleGoogleSignIn = async () => {
+    setError(null);
+    setLoading(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      router.push('/dashboard');
+    } catch (err: any) {
+      setError(err.message || "Failed to sign in with Google.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFacebookSignIn = async () => {
+    setError(null);
+    setLoading(true);
+    try {
+      const provider = new FacebookAuthProvider();
+      await signInWithPopup(auth, provider);
+      router.push('/dashboard');
+    } catch (err: any) {
+      setError(err.message || "Failed to sign in with Facebook.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (isLoading || user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <p className="text-sm font-sans font-medium text-muted-foreground animate-pulse">Entering the Forge...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
@@ -70,7 +115,7 @@ export default function AuthPage() {
         </div>
 
         <div className="relative z-10 text-white/60 text-sm">
-          © 2025 RiseForge Inc.
+          © 2026 RiseForge Inc.
         </div>
       </div>
 
@@ -85,12 +130,12 @@ export default function AuthPage() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-3">
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+                  <Mail className="absolute left-3 top-3.5 w-4 h-4 text-muted-foreground" />
                   <Input 
                     id="email" 
                     type="email" 
@@ -105,7 +150,7 @@ export default function AuthPage() {
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+                  <Lock className="absolute left-3 top-3.5 w-4 h-4 text-muted-foreground" />
                   <Input 
                     id="password" 
                     type="password" 
@@ -130,11 +175,53 @@ export default function AuthPage() {
               </motion.div>
             )}
 
-            <Button type="submit" className="w-full h-11 rounded-xl shadow-lg shadow-primary/20" disabled={loading}>
+            <Button type="submit" className="w-full h-11 rounded-xl shadow-lg shadow-primary/20 mt-2" disabled={loading}>
               {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Create Account')} 
               {!loading && <ArrowRight className="ml-2 w-4 h-4" />}
             </Button>
           </form>
+
+          {/* Separator line */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-border" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-3 text-muted-foreground font-sans">Or continue with</span>
+            </div>
+          </div>
+
+          {/* Social Sign-In Grid */}
+          <div className="grid grid-cols-2 gap-4">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={handleGoogleSignIn} 
+              disabled={loading || isLoading}
+              className="rounded-xl h-11 border-border flex items-center justify-center gap-2 hover:bg-secondary transition-colors"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24">
+                <path fill="#EA4335" d="M12 5.04c1.66 0 3.2.57 4.38 1.69l3.27-3.27C17.68 1.54 14.98 1 12 1 7.35 1 3.37 3.65 1.4 7.56l3.87 3c.92-2.76 3.49-4.52 6.73-4.52z"/>
+                <path fill="#4285F4" d="M23.49 12.27c0-.81-.07-1.59-.2-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58l3.87 3c2.26-2.09 3.55-5.16 3.55-8.82z"/>
+                <path fill="#FBBC05" d="M5.27 14.28c-.24-.72-.38-1.49-.38-2.28s.14-1.56.38-2.28L1.4 7.56C.51 9.34 0 11.35 0 13.5s.51 4.16 1.4 5.94l3.87-3.16z"/>
+                <path fill="#34A853" d="M12 23c3.24 0 5.97-1.07 7.96-2.91l-3.87-3c-1.08.72-2.48 1.16-4.09 1.16-3.24 0-5.81-1.76-6.73-4.52l-3.87 3C3.37 20.35 7.35 23 12 23z"/>
+              </svg>
+              <span className="font-sans">Google</span>
+            </Button>
+            
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={handleFacebookSignIn} 
+              disabled={loading || isLoading}
+              className="rounded-xl h-11 border-border flex items-center justify-center gap-2 hover:bg-secondary transition-colors"
+            >
+              <svg className="w-4 h-4 fill-[#1877F2]" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+              <span className="font-sans">Facebook</span>
+            </Button>
+          </div>
 
           <div className="text-center">
             <button 

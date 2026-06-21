@@ -29,6 +29,9 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
+import { initializeFirebase, useUser } from '@/firebase'
+import { signOut } from 'firebase/auth'
+
 
 const THEME_PRESETS = [
   { name: 'Electric Blue', primary: '217 91% 60%', accent: '199 89% 48%' },
@@ -40,6 +43,17 @@ const THEME_PRESETS = [
 export default function ProfilePage() {
   const { state, xpToNext } = useGameState()
   const [activeTheme, setActiveTheme] = useState(THEME_PRESETS[0].name)
+  const { auth } = initializeFirebase()
+  const { user } = useUser()
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth)
+    } catch (e) {
+      console.error("Sign out error:", e)
+    }
+  }
+
 
   const applyTheme = (theme: typeof THEME_PRESETS[0]) => {
     setActiveTheme(theme.name)
@@ -227,28 +241,27 @@ export default function ProfilePage() {
             <div className="max-w-2xl space-y-6">
               <Card className="glass-card border-white/5">
                 <CardHeader>
-                  <CardTitle className="text-[10px] font-black uppercase tracking-widest">Account Security</CardTitle>
+                  <CardTitle className="text-[10px] font-black uppercase tracking-widest">Account Settings</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 font-sans">
                   <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
                     <div className="flex items-center gap-3">
                       <Mail className="w-4 h-4 text-muted-foreground" />
                       <div>
                         <p className="text-[11px] font-bold">Email Address</p>
-                        <p className="text-[10px] text-muted-foreground">founder@riseforge.io</p>
+                        <p className="text-[10px] text-muted-foreground font-mono">{user?.email || 'guest@riseforge.io'}</p>
                       </div>
                     </div>
-                    <Button variant="ghost" size="sm" className="text-[10px] font-black uppercase tracking-widest">Update</Button>
                   </div>
                   <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
                     <div className="flex items-center gap-3">
-                      <Settings className="w-4 h-4 text-muted-foreground" />
+                      <LogOut className="w-4 h-4 text-muted-foreground" />
                       <div>
-                        <p className="text-[11px] font-bold">Security & Password</p>
-                        <p className="text-[10px] text-muted-foreground">Last changed 12 days ago</p>
+                        <p className="text-[11px] font-bold">Sign Out</p>
+                        <p className="text-[10px] text-muted-foreground">Sign out of your session on this device.</p>
                       </div>
                     </div>
-                    <Button variant="ghost" size="sm" className="text-[10px] font-black uppercase tracking-widest">Change</Button>
+                    <Button variant="ghost" size="sm" onClick={handleLogout} className="text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-red-600 hover:bg-red-500/10">Sign Out</Button>
                   </div>
                 </CardContent>
               </Card>

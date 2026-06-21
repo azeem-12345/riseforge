@@ -2,6 +2,10 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { useAuth, useFirestore } from '@/firebase'
+import { onAuthStateChanged } from 'firebase/auth'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
+
 
 export type UserLevel = 'Explorer' | 'Builder' | 'Creator' | 'Innovator' | 'Visionary' | 'Gamechanger'
 export type FounderStage = 'Dreamer' | 'Builder' | 'Operator' | 'Strategist' | 'Visionary' | 'Empire Architect'
@@ -147,7 +151,10 @@ const GameStateContext = createContext<GameStateContextType | undefined>(undefin
 export function GameStateProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<GameState>(DEFAULT_STATE)
   const [isLoaded, setIsLoaded] = useState(false)
+  const auth = useAuth()
+  const firestore = useFirestore()
 
+  // 1. Initial LocalStorage Load (Immediate fallback)
   useEffect(() => {
     const saved = localStorage.getItem('riseforge_ceo_v1')
     if (saved) {
@@ -165,13 +172,63 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
         console.error("Failed to parse game state", e)
       }
     }
-    setIsLoaded(true)
   }, [])
+
+  // 2. Sync and load from Firestore on login / sign out
+  useEffect(() => {
+    if (!auth || !firestore) {
+      setIsLoaded(true)
+      return
+    }
+
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDocRef = doc(firestore, 'users', user.uid)
+        try {
+          const docSnap = await getDoc(userDocRef)
+          if (docSnap.exists()) {
+            const dbData = docSnap.data() as GameState
+            setState({
+              ...DEFAULT_STATE,
+              ...dbData,
+              skills: { ...DEFAULT_SKILLS, ...dbData.skills },
+              founderStats: { ...DEFAULT_STATE.founderStats, ...dbData.founderStats }
+            })
+            // Update local storage backup
+            localStorage.setItem('riseforge_ceo_v1', JSON.stringify(dbData))
+          } else {
+            // New user registration - save their current local/onboarded progress to Firestore!
+            setState(prev => {
+              setDoc(userDocRef, prev).catch(err => console.error("Firestore init error:", err))
+              return prev
+            })
+          }
+        } catch (e) {
+          console.error("Error loading profile from firestore:", e)
+        }
+      } else {
+        // Logged out - reset state to default explorer
+        setState(DEFAULT_STATE)
+        localStorage.removeItem('riseforge_ceo_v1')
+      }
+      setIsLoaded(true)
+    })
+
+    return () => unsubscribe()
+  }, [auth, firestore])
 
   const updateState = (updater: (prev: GameState) => GameState) => {
     setState(prev => {
       const newState = updater(prev)
       localStorage.setItem('riseforge_ceo_v1', JSON.stringify(newState))
+      
+      // Push state changes to Firestore database if authenticated
+      if (auth?.currentUser && firestore) {
+        const userDocRef = doc(firestore, 'users', auth.currentUser.uid)
+        setDoc(userDocRef, newState).catch(err => {
+          console.error("Firestore sync error:", err)
+        })
+      }
       return newState
     })
   }

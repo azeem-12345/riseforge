@@ -26,6 +26,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { ACADEMY_CONTENT } from '@/lib/academy-data'
 import { PlaceHolderImages } from '@/lib/placeholder-images'
+import { useUser } from '@/firebase'
 
 type Step = 'theory' | 'summary'
 const STEPS: Step[] = ['theory', 'summary']
@@ -55,11 +56,26 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
   const lesson = ACADEMY_CONTENT[id]
   const router = useRouter()
   const { completeLesson, state } = useGameState()
+  const { user, isLoading } = useUser()
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [direction, setDirection] = useState(0)
   const [isFinished, setIsFinished] = useState(false)
   const [simFeedback, setSimFeedback] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/auth')
+    }
+  }, [user, isLoading, router])
+
+  if (isLoading || !user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <p className="text-sm font-sans font-medium text-muted-foreground animate-pulse">Verifying credentials...</p>
+      </div>
+    )
+  }
 
   if (!lesson) {
     return (
