@@ -45,7 +45,9 @@ export const ACADEMY_CONTENT: Record<string, AcademyWeek> = {
     week: 1,
     title: 'How to Start a Startup',
     objective: 'Understand the four core pillars of startup success: Idea, Product, Team, and Execution.',
-    theory: `!!IMAGE:founder-vision!!
+    theory: `> [!IMPORTANT] **YC CORE STARTUP SCHOOL PRINCIPLE: MAKE SOMETHING PEOPLE WANT** - Ideas are cheap, but problems are valuable. Your goal in Week 1 is not to build a giant product, but to validate a real, painful problem that a small group of users has.
+
+!!IMAGE:founder-vision!!
 
 ## How to Start a Startup
 Startups are distinct from traditional companies; qualities like being poor and unknown can be advantageous.
@@ -220,7 +222,8 @@ Learn to separate signal (valid customer feedback) from noise (cynicism from peo
     week: 2,
     title: 'Hiring and Execution',
     objective: 'Learn how to pick the right partners, hire your first employees, and execute with surgical focus.',
-    theory: `
+    theory: `> [!IMPORTANT] **YC CORE STARTUP SCHOOL PRINCIPLE: BE RELENTLESSLY RESOURCEFUL** - Startups fail when they lose momentum. Your core job as a founder is to move fast, execute with extreme focus, and build a high-fidelity team of co-founders and early hires.
+
 ## Finding Fast-Growing Markets
 Young people have an edge in spotting fast-growing markets. They use new technologies first and see trends among their peers.
 Watch what you and your friends use every day. Think about what markets will grow big over the next 10 years.
@@ -413,7 +416,8 @@ Equity is your most expensive currency. Do not give it away lightly.
     week: 3,
     title: 'Startups Are Counterintuitive',
     objective: 'Understand why startup building requires unlearning traditional habits and focusing on real user value.',
-    theory: `
+    theory: `> [!IMPORTANT] **YC CORE STARTUP SCHOOL PRINCIPLE: DO THINGS THAT DON'T SCALE** - Bypassing the "professional startup" trap means focusing on raw value instead of form. Recruit your first users manually, talk to them directly, and don't try to automate what you can do by hand.
+
 ## Introduction
 This course gives advice for young adults, especially those interested in startups. It treats startup building like learning to ski. Your first instincts are often wrong and dangerous.
 !!IMAGE:counterintuitive-mindset!!
@@ -574,7 +578,8 @@ You will experience extreme highs and extreme lows, often in the same afternoon.
     week: 4,
     title: 'The Consumer Mind',
     objective: 'Understand the psychological foundations of user growth and why people choose certain products over others.',
-    theory: `
+    theory: `> [!IMPORTANT] **YC CORE STARTUP SCHOOL PRINCIPLE: LISTEN TO YOUR USERS** - Empathy is the foundation of growth. Stop building features based on guesses; watch your users' actual behavior, reduce signup friction, and deliver the "magic moment" in seconds.
+
 ## THE PSYCHOLOGY OF STARTUPS
 Building a product is only half the battle. The other half is understanding why people use things. Psychology is the foundation of growth.
 !!IMAGE:consumer-mind!!
@@ -676,8 +681,11 @@ Products that reach a billion valuation turn their users into a cult.
     week: 5,
     title: 'Vanities vs Reality',
     objective: 'Master the numbers that matter and avoid the traps of fake growth.',
-    theory: `
-\n!!IMAGE:financial-fortitude!!\n\n## INTRODUCTION TO STARTUP FINANCE
+    theory: `> [!IMPORTANT] **YC CORE STARTUP SCHOOL PRINCIPLE: KNOW YOUR NUMBERS** - Startup finance is about survival. If you run out of cash, the game ends. You must track your monthly burn rate, LTV, CAC, and payback period with absolute precision.
+
+!!IMAGE:financial-fortitude!!
+
+## INTRODUCTION TO STARTUP FINANCE
 Many founders think finance is about complex spreadsheets and accounting. In a startup, finance is much simpler: It is about survival.
 
 ## VANITY METRICS VS. REALITY
@@ -775,8 +783,11 @@ You must become obsessed with your spreadsheets. If you run out of cash, the gam
     week: 6,
     title: 'Growth Fundamentals',
     objective: 'Master the strategic principles of sustainable growth and the North Star metric.',
-    theory: `
-\n!!IMAGE:growth-graph!!\n\n## Retention First
+    theory: `> [!IMPORTANT] **YC CORE STARTUP SCHOOL PRINCIPLE: RETENTION IS THE ONLY ENGINE OF GROWTH** - Growth hacks will fail if your product has a leaky bucket. Focus 100% of your initial growth efforts on flattening your cohort retention curve above zero.
+
+!!IMAGE:growth-graph!!
+
+## Retention First
 Retention is the single most important growth metric. Without users returning, all acquisition is wasted. Retention curves that flatten above zero signal product-market fit and business viability.
 - Graph daily active users post-signup
 - E-commerce: 20-30% monthly retention works

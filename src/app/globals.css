@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    /* Premium Slate Dark Theme */
-    --background: 240 5% 4%;
-    --foreground: 0 0% 98%;
-    --card: 240 5% 7%;       
-    --card-foreground: 0 0% 98%;
-    --popover: 240 5% 7%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 217 91% 60%;   /* Premium Electric Blue */
+    /* Premium Education Friendly Light Theme */
+    --background: 240 10% 98%;
+    --foreground: 240 10% 12%;
+    --card: 0 0% 100%;       
+    --card-foreground: 240 10% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 12%;
+    --primary: 217 91% 45%;   /* Warm, readable blue */
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 5% 12%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 5% 12%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 240 5% 15%;     
-    --accent-foreground: 0 0% 98%;
+    --secondary: 240 5% 95%;
+    --secondary-foreground: 240 10% 12%;
+    --muted: 240 5% 94%;
+    --muted-foreground: 240 5% 40%;
+    --accent: 240 5% 90%;     
+    --accent-foreground: 240 10% 12%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5% 15%;
-    --input: 240 5% 15%;
-    --ring: 217 91% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 217 91% 45%;
     --radius: 0.75rem;
   }
 }
@@ -34,18 +34,18 @@
   }
   body {
     @apply bg-background text-foreground font-body antialiased;
-    font-size: 14px;
-    background: radial-gradient(circle at 50% 0%, hsl(240 5% 10%) 0%, hsl(240 5% 4%) 100%);
+    font-size: 16px;
+    background: radial-gradient(circle at 50% 0%, hsl(240 10% 99%) 0%, hsl(240 10% 97%) 100%);
     background-attachment: fixed;
   }
-  h1 { @apply text-2xl font-semibold font-headline tracking-tight text-foreground/90; }
-  h2 { @apply text-xl font-semibold font-headline tracking-tight text-foreground/90; }
-  h3 { @apply text-lg font-medium font-headline tracking-tight text-foreground/80; }
-  p { @apply text-[14px] leading-relaxed text-muted-foreground; }
+  h1 { @apply text-2xl font-bold font-headline tracking-tight text-foreground; }
+  h2 { @apply text-xl font-bold font-headline tracking-tight text-foreground; }
+  h3 { @apply text-lg font-semibold font-headline tracking-tight text-foreground/80; }
+  p { @apply text-[16px] leading-relaxed text-muted-foreground/90; }
 }
 
 .glass-card {
-  @apply bg-white/[0.02] backdrop-blur-2xl border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.4)];
+  @apply bg-white/70 backdrop-blur-2xl border border-black/[0.06] shadow-[0_8px_30px_rgba(0,0,0,0.03)];
 }
 
 .primary-gradient {

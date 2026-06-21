@@ -131,7 +131,7 @@ export default function DashboardPage() {
         <motion.div 
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/[0.08] pb-6"
+          className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border pb-6"
         >
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
@@ -146,7 +146,7 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-5 text-sm bg-card/40 border border-white/[0.08] px-5 py-3 rounded-2xl shadow-sm backdrop-blur-xl">
+          <div className="flex items-center gap-5 text-sm bg-card border border-border px-5 py-3 rounded-2xl shadow-sm backdrop-blur-xl">
             <div className="text-right">
               <p className="text-xs text-muted-foreground font-medium tracking-wide">Experience Points</p>
               <p className="font-mono text-sm md:text-base font-semibold text-foreground mt-0.5">
@@ -154,7 +154,7 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="w-24 md:w-32">
-              <Progress value={progressValue} className="h-2 bg-white/10" />
+              <Progress value={progressValue} className="h-2 bg-secondary" />
             </div>
           </div>
         </motion.div>
@@ -167,14 +167,14 @@ export default function DashboardPage() {
             { label: "Streak Record", value: `${state.streak || 7} Days`, icon: <Flame className="w-4 h-4" />, color: "text-orange-400", bg: "bg-orange-400/10" },
             { label: "Active Ventures", value: "2 Companies", icon: <Building2 className="w-4 h-4" />, color: "text-primary", bg: "bg-primary/10" },
           ].map((stat, i) => (
-            <Card key={i} className="glass-card transition-all hover:border-white/[0.15]">
+            <Card key={i} className="glass-card transition-all hover:border-border">
               <CardContent className="p-5">
                 <div className="flex justify-between items-start">
                   <div className="space-y-1.5">
                     <p className="text-xs text-muted-foreground/80 font-medium tracking-wide">{stat.label}</p>
                     <p className="text-xl md:text-2xl font-semibold tracking-tight text-foreground/90">{stat.value}</p>
                   </div>
-                  <div className={cn("p-2 rounded-xl border border-white/[0.05]", stat.bg, stat.color)}>
+                  <div className={cn("p-2 rounded-xl border border-border", stat.bg, stat.color)}>
                     {stat.icon}
                   </div>
                 </div>
@@ -202,7 +202,7 @@ export default function DashboardPage() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm border-collapse">
                     <thead>
-                      <tr className="border-b border-white/[0.08] text-muted-foreground/70 pb-2">
+                      <tr className="border-b border-border text-muted-foreground/70 pb-2">
                         <th className="font-medium pb-3 pr-4">Company</th>
                         <th className="font-medium pb-3 px-4">Type</th>
                         <th className="font-medium pb-3 px-4">Valuation</th>
@@ -210,11 +210,11 @@ export default function DashboardPage() {
                         <th className="font-medium pb-3 pl-4 text-right">Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/[0.04]">
+                    <tbody className="divide-y divide-border">
                       {ventures.map((venture, index) => (
-                        <tr key={index} className="hover:bg-white/[0.02] transition-colors">
+                        <tr key={index} className="hover:bg-secondary/40 transition-colors">
                           <td className="py-4 pr-4 font-medium text-foreground/90 flex items-center gap-2.5">
-                            <div className="p-1.5 rounded-md bg-white/5 border border-white/5">
+                            <div className="p-1.5 rounded-md bg-secondary border border-border">
                               <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
                             </div>
                             {venture.name}
@@ -245,10 +245,10 @@ export default function DashboardPage() {
                 <div className="h-72 md:h-80 w-full max-w-md">
                   <ResponsiveContainer width="100%" height="100%">
                     <RadarChart data={skillData} outerRadius="70%">
-                      <PolarGrid stroke="rgba(255, 255, 255, 0.08)" />
+                      <PolarGrid stroke="rgba(0, 0, 0, 0.06)" />
                       <PolarAngleAxis 
                         dataKey="skill" 
-                        tick={{ fontSize: 11, fill: "#9ca3af", fontWeight: 500 }} 
+                        tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))", fontWeight: 500 }} 
                       />
                       <Radar
                         name="Competence"
@@ -271,10 +271,10 @@ export default function DashboardPage() {
                 <p className="text-sm text-muted-foreground mt-0.5">Audit log of actions, level increases, and business occurrences</p>
               </CardHeader>
               <CardContent className="pt-2">
-                <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-[15px] before:w-px before:bg-white/[0.08]">
+                <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-[15px] before:w-px before:bg-border">
                   {timelineEvents.map((event, index) => (
                     <div key={index} className="flex gap-5 relative items-start text-sm">
-                      <div className="w-8 h-8 rounded-full bg-card border border-white/[0.1] flex items-center justify-center flex-shrink-0 z-10 shadow-sm">
+                      <div className="w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center flex-shrink-0 z-10 shadow-sm">
                         {event.icon}
                       </div>
                       <div className="space-y-1 flex-1 min-w-0 pt-1">
@@ -314,13 +314,13 @@ export default function DashboardPage() {
                     <Map className="w-4 h-4" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" className="w-full justify-between h-12 text-sm font-medium border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.06] text-foreground transition-colors px-4 rounded-xl">
+                <Button asChild variant="outline" className="w-full justify-between h-12 text-sm font-medium border-border bg-secondary/50 hover:bg-secondary text-foreground transition-colors px-4 rounded-xl">
                   <Link href="/opportunity-scanner" className="flex items-center justify-between w-full">
                     <span>Opportunity Scanner</span>
                     <Globe className="w-4 h-4 text-muted-foreground" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" className="w-full justify-between h-12 text-sm font-medium border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.06] text-foreground transition-colors px-4 rounded-xl">
+                <Button asChild variant="outline" className="w-full justify-between h-12 text-sm font-medium border-border bg-secondary/50 hover:bg-secondary text-foreground transition-colors px-4 rounded-xl">
                   <Link href="/idea-lab" className="flex items-center justify-between w-full">
                     <span>Enter Idea Lab</span>
                     <FlaskConical className="w-4 h-4 text-muted-foreground" />
@@ -347,7 +347,7 @@ export default function DashboardPage() {
                         {okr.progress}%
                       </span>
                     </div>
-                    <Progress value={okr.progress} className="h-1.5 bg-white/[0.05]" />
+                    <Progress value={okr.progress} className="h-1.5 bg-secondary" />
                     <div className="flex justify-between text-[11px] text-muted-foreground/60 font-mono tracking-wide">
                       <span>Val: {okr.current}</span>
                       <span>Target: {okr.target}</span>
@@ -365,7 +365,7 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {marketAlerts.map((alert, index) => (
-                  <div key={index} className="p-3.5 bg-white/[0.02] border border-white/[0.05] rounded-xl flex items-start gap-3 text-sm transition-colors hover:bg-white/[0.04]">
+                  <div key={index} className="p-3.5 bg-secondary/40 border border-border rounded-xl flex items-start gap-3 text-sm transition-colors hover:bg-secondary">
                     <div className={cn("p-1.5 rounded-lg shrink-0", alert.severity === "warning" ? "bg-amber-500/10" : "bg-blue-500/10")}>
                       {alert.severity === "warning" ? (
                         <AlertCircle className="w-4 h-4 text-amber-400" />

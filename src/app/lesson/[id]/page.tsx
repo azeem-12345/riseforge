@@ -1,10 +1,9 @@
-
 "use client"
 
 import { useState, use, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import GameShell from '@/components/game/GameShell'
+import LevelUpModal from '@/components/game/LevelUpModal'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -28,8 +27,8 @@ import { cn } from '@/lib/utils'
 import { ACADEMY_CONTENT } from '@/lib/academy-data'
 import { PlaceHolderImages } from '@/lib/placeholder-images'
 
-type Step = 'theory' | 'scenario' | 'integration' | 'summary'
-const STEPS: Step[] = ['theory', 'scenario', 'integration', 'summary']
+type Step = 'theory' | 'summary'
+const STEPS: Step[] = ['theory', 'summary']
 
 const slideVariants = {
   enter: (direction: number) => ({
@@ -64,13 +63,13 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
 
   if (!lesson) {
     return (
-      <GameShell>
+      <div className="flex items-center justify-center min-h-screen bg-background text-foreground font-body">
         <div className="text-center py-24">
           <h2 className="text-lg font-bold">Strategic Link Broken</h2>
           <p className="text-muted-foreground mt-2">The curriculum module is currently under encryption.</p>
           <Button onClick={() => router.push('/world-map')} className="mt-8 rounded-xl h-11 px-8 font-black uppercase text-[10px] tracking-widest">Return to Academy Path</Button>
         </div>
-      </GameShell>
+      </div>
     )
   }
 
@@ -99,17 +98,18 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
   }
 
   return (
-    <GameShell>
-      <div className="max-w-5xl mx-auto min-h-[85vh] flex flex-col pb-16">
+    <div className="min-h-screen bg-background text-foreground font-body overflow-y-auto">
+      <LevelUpModal />
+      <div className="max-w-5xl mx-auto min-h-screen flex flex-col px-6 md:px-10 pb-24">
         {/* Top Header */}
-        <div className="flex items-center justify-between py-3 border-b border-white/5 shrink-0">
+        <div className="flex items-center justify-between py-3 border-b border-border shrink-0">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={() => router.push('/world-map')} className="h-8 w-8 text-muted-foreground hover:text-primary transition-colors">
               <ArrowLeft className="w-3.5 h-3.5" />
             </Button>
             <div className="space-y-0.5">
-              <h1 className="text-[9px] font-black tracking-tight uppercase leading-none">Week {lesson.week}: {lesson.title}</h1>
-              <p className="text-[7px] text-muted-foreground uppercase tracking-widest font-black">Level {lesson.level}: Foundation Module</p>
+              <h1 className="text-[12px] font-bold tracking-tight uppercase leading-none">Week {lesson.week}: {lesson.title}</h1>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">Level {lesson.level}: Foundation Module</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -119,7 +119,7 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                   key={i} 
                   className={cn(
                     "w-5 h-1 rounded-full transition-all duration-500",
-                    i <= currentStepIndex ? "bg-primary" : "bg-white/10"
+                    i <= currentStepIndex ? "bg-primary" : "bg-secondary"
                   )}
                 />
               ))}
@@ -148,12 +148,12 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                 {/* Step 1: Theory (PDF / Paper Style) */}
                 {currentStep === 'theory' && (
                   <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-2 duration-1000">
-                    <Card className="glass-card shadow-2xl rounded-2xl overflow-hidden flex flex-col relative mx-auto border-white/[0.08]">
+                    <Card className="glass-card shadow-2xl rounded-2xl overflow-hidden flex flex-col relative mx-auto border-border">
                       {/* Premium Accent */}
                       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary opacity-80" />
                       
                       <CardContent className="p-6 md:p-12 space-y-4 flex-1">
-                        <div className="space-y-3 border-b border-white/[0.08] pb-8">
+                        <div className="space-y-3 border-b border-border pb-8">
                           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80 mb-1 flex items-center gap-2">
                             <Sparkles className="w-3 h-3" /> Executive Briefing • Week {lesson.week}
                           </p>
@@ -166,19 +166,50 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                              {lesson.theory.split('\n').map((line, i) => {
                                if (line.startsWith('## ')) {
                                  return (
-                                   <h3 key={i} className="text-lg font-semibold text-primary/90 mt-10 mb-4 tracking-wide border-l-2 border-primary pl-4">
+                                   <h3 key={i} className="text-lg font-semibold text-primary/95 mt-10 mb-4 tracking-wide border-l-2 border-primary pl-4">
                                      {line.replace('## ', '')}
                                    </h3>
                                  )
                                }
                                
+                               if (line.startsWith('> ')) {
+                                 const cleanLine = line.replace(/^>\s*/, '');
+                                 let type = 'info';
+                                 let content = cleanLine;
+                                 if (cleanLine.startsWith('[!IMPORTANT]')) {
+                                   type = 'important';
+                                   content = cleanLine.replace('[!IMPORTANT]', '').trim();
+                                 } else if (cleanLine.startsWith('[!WARNING]')) {
+                                   type = 'warning';
+                                   content = cleanLine.replace('[!WARNING]', '').trim();
+                                 } else if (cleanLine.startsWith('[!TIP]')) {
+                                   type = 'tip';
+                                   content = cleanLine.replace('[!TIP]', '').trim();
+                                 }
+                                 
+                                 return (
+                                   <div key={i} className={cn(
+                                     "p-5 rounded-xl border my-6 flex gap-4 text-[15px] leading-relaxed",
+                                     type === 'important' && "bg-primary/5 border-primary/20 text-foreground",
+                                     type === 'warning' && "bg-amber-500/5 border-amber-500/20 text-foreground",
+                                     type === 'tip' && "bg-emerald-500/5 border-emerald-500/20 text-foreground",
+                                     type === 'info' && "bg-secondary border-border text-foreground"
+                                   )}>
+                                     <Sparkles className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                                     <div className="font-medium">
+                                       {content}
+                                     </div>
+                                   </div>
+                                 )
+                               }
+
                                if (line.startsWith('!!IMAGE:')) {
                                  const imageId = line.replace('!!IMAGE:', '').replace('!!', '').trim()
                                  const imageData = PlaceHolderImages.find(img => img.id === imageId)
                                  if (imageData) {
                                    return (
                                      <div key={i} className="my-10 flex flex-col items-center">
-                                       <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_0_40px_rgba(var(--primary)/0.15)] max-w-4xl mx-auto group">
+                                       <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-border shadow-[0_0_40px_rgba(var(--primary)/0.05)] max-w-4xl mx-auto group">
                                          <div className="absolute inset-0 bg-primary/5 group-hover:bg-transparent transition-colors z-10 pointer-events-none" />
                                          <Image 
                                            src={imageData.imageUrl} 
@@ -198,9 +229,9 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                                  const cells = line.split('|').filter(c => c.trim() !== '').map(c => c.trim());
                                  if (cells.length === 0 || line.includes('---')) return null;
                                  return (
-                                   <div key={i} className="grid grid-cols-[1fr_2fr] gap-6 py-4 border-b border-white/[0.05] last:border-0">
+                                   <div key={i} className="grid grid-cols-[1fr_2fr] gap-6 py-4 border-b border-border last:border-0">
                                      <span className="text-xs font-semibold text-primary/80 uppercase tracking-wider">{cells[0]}</span>
-                                     <span className="text-[13px] text-muted-foreground/90 font-medium leading-relaxed">{cells[1]}</span>
+                                     <span className="text-[14px] text-muted-foreground/95 font-medium leading-relaxed">{cells[1]}</span>
                                    </div>
                                  )
                                }
@@ -211,14 +242,14 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                            </div>
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-8 pt-10 border-t border-white/[0.08] mt-8">
+                        <div className="grid md:grid-cols-2 gap-8 pt-10 border-t border-border mt-8">
                           <div className="space-y-4">
                              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/80 flex items-center gap-2">
                                <Lightbulb className="w-3.5 h-3.5 text-primary" /> Case Examples
                              </h3>
                              <ul className="space-y-4">
                                {lesson.examples.map((ex, i) => (
-                                 <li key={i} className="text-sm text-foreground/80 border-l-2 border-primary/20 pl-4 py-1 italic leading-relaxed bg-white/[0.01] rounded-r-lg">
+                                 <li key={i} className="text-sm text-foreground/85 border-l-2 border-primary/30 pl-4 py-1 italic leading-relaxed bg-secondary/40 rounded-r-lg">
                                    {ex}
                                  </li>
                                ))}
@@ -230,9 +261,9 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                              </h3>
                              <div className="space-y-4">
                                {lesson.vocabulary.map((v, i) => (
-                                 <div key={i} className="text-sm bg-white/[0.02] p-3 rounded-xl border border-white/[0.05]">
-                                   <span className="font-semibold text-primary/90 block mb-1">{v.word}</span>
-                                   <span className="text-muted-foreground/80 leading-relaxed block">{v.definition}</span>
+                                 <div key={i} className="text-sm bg-secondary/30 p-3 rounded-xl border border-border">
+                                   <span className="font-semibold text-primary/95 block mb-1">{v.word}</span>
+                                   <span className="text-muted-foreground/90 leading-relaxed block">{v.definition}</span>
                                  </div>
                                ))}
                            </div>
@@ -241,7 +272,7 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                       </CardContent>
                       
                       {/* Footer Decoration */}
-                      <div className="p-5 border-t border-white/[0.05] bg-black/20 flex justify-between items-center text-[9px] font-semibold text-muted-foreground/60 uppercase tracking-widest">
+                      <div className="p-5 border-t border-border bg-secondary/50 flex justify-between items-center text-[9px] font-semibold text-muted-foreground/60 uppercase tracking-widest">
                         <span>RiseForge Academy Internal Document</span>
                         <span>CONFIDENTIAL • FOR EDUCATIONAL USE</span>
                       </div>
@@ -249,7 +280,6 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                   </div>
                 )}
 
-                {/* Step 2: Scenario */}
                 {currentStep === 'scenario' && (
                   <div className="space-y-4 w-full max-w-3xl">
                     <div className="p-6 rounded-[1.5rem] glass-card border-accent/20 bg-accent/[0.02] relative overflow-hidden">
@@ -384,6 +414,6 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
           </div>
         )}
       </div>
-    </GameShell>
+    </div>
   )
 }

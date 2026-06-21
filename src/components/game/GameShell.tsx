@@ -58,7 +58,7 @@ export default function GameShell({ children }: { children: React.ReactNode }) {
       <LevelUpModal />
       
       {/* Desktop Sidebar */}
-      <aside className="w-56 border-r border-white/5 bg-card/50 backdrop-blur-3xl hidden md:flex flex-col relative z-50">
+      <aside className="w-56 border-r border-border bg-card/90 backdrop-blur-3xl hidden md:flex flex-col relative z-50">
         <div className="p-6">
           <div onClick={() => router.push('/dashboard')} className="flex items-center gap-3 cursor-pointer group">
             <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -84,7 +84,7 @@ export default function GameShell({ children }: { children: React.ReactNode }) {
                     ? "bg-primary text-primary-foreground shadow-lg shadow-primary/10" 
                     : !isUnlocked 
                       ? "opacity-40 grayscale cursor-not-allowed" 
-                      : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                      : "text-muted-foreground hover:bg-black/[0.03] hover:text-foreground"
                 )}
               >
                 <div className="flex items-center gap-3">
@@ -97,12 +97,12 @@ export default function GameShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        <div className="p-4 border-t border-white/5">
+        <div className="p-4 border-t border-border">
           <div 
             onClick={() => router.push('/profile')}
             className={cn(
               "flex items-center gap-3 p-2.5 rounded-xl transition-all border cursor-pointer group",
-              pathname === '/profile' ? "bg-accent/10 border-accent/30" : "bg-white/5 border-white/5 hover:bg-white/10"
+              pathname === '/profile' ? "bg-accent/10 border-accent/30" : "bg-black/[0.02] border-border hover:bg-black/[0.05]"
             )}
           >
             <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent-foreground font-semibold text-sm shadow-sm overflow-hidden border border-accent/30">
@@ -122,7 +122,7 @@ export default function GameShell({ children }: { children: React.ReactNode }) {
         <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-accent/5 blur-[120px] rounded-full pointer-events-none -z-10" />
 
         {/* Mobile Header */}
-        <header className="md:hidden flex items-center justify-between p-4 border-b border-white/5 bg-background/80 backdrop-blur-xl shrink-0">
+        <header className="md:hidden flex items-center justify-between p-4 border-b border-border bg-background/80 backdrop-blur-xl shrink-0">
           <div onClick={() => router.push('/dashboard')} className="flex items-center gap-2 cursor-pointer">
             <Rocket className="text-primary w-5 h-5" />
             <span className="font-headline font-semibold text-lg tracking-tight text-foreground/90">RiseForge</span>
@@ -134,8 +134,8 @@ export default function GameShell({ children }: { children: React.ReactNode }) {
                 <Menu className="w-5 h-5" />
               </button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-64 p-0 bg-card border-white/5">
-              <SheetHeader className="p-6 pb-2 text-left border-b border-white/5">
+            <SheetContent side="left" className="w-64 p-0 bg-card border-border">
+              <SheetHeader className="p-6 pb-2 text-left border-b border-border">
                 <SheetTitle className="flex items-center gap-2">
                   <div className="p-1.5 bg-primary rounded-lg">
                     <Rocket className="text-primary-foreground w-4 h-4" />
@@ -160,7 +160,7 @@ export default function GameShell({ children }: { children: React.ReactNode }) {
                             ? "bg-primary text-primary-foreground shadow-lg shadow-primary/10" 
                             : !isUnlocked 
                               ? "opacity-40 grayscale cursor-not-allowed" 
-                              : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                              : "text-muted-foreground hover:bg-black/[0.03] hover:text-foreground"
                         )}
                       >
                         <div className="flex items-center gap-3">
