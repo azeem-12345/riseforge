@@ -28,8 +28,7 @@ import {
 import { useUser } from '@/firebase'
 
 const navItems = [
-  { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard', key: 'dashboard' },
-  { name: 'How to Start a Startup', icon: MapIcon, href: '/world-map', key: 'world-map' },
+  { name: 'How to Start a Startup', icon: MapIcon, href: '/home', key: 'world-map' },
   { name: 'Founder Mentor', icon: Brain, href: '/mentor', key: 'mentor' },
   { name: 'Leaderboard', icon: Trophy, href: '/leaderboard', key: 'leaderboard' },
 ]
@@ -62,7 +61,7 @@ export default function GameShell({ children }: { children: React.ReactNode }) {
   }
 
   const isModuleUnlocked = (key: string) => {
-    if (key === 'dashboard' || key === 'world-map' || key === 'profile') return true;
+    if (key === 'world-map' || key === 'profile') return true;
     return state.unlockedModules.includes(key);
   }
 
@@ -73,7 +72,7 @@ export default function GameShell({ children }: { children: React.ReactNode }) {
       {/* Desktop Sidebar */}
       <aside className="w-56 border-r border-border bg-card/90 backdrop-blur-3xl hidden md:flex flex-col relative z-50">
         <div className="p-6">
-          <div onClick={() => router.push('/dashboard')} className="flex items-center gap-3 cursor-pointer group">
+          <div onClick={() => router.push('/home')} className="flex items-center gap-3 cursor-pointer group">
             <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
               <Rocket className="text-primary w-4 h-4" />
             </div>
@@ -140,7 +139,7 @@ export default function GameShell({ children }: { children: React.ReactNode }) {
 
         {/* Mobile Header */}
         <header className="md:hidden flex items-center justify-between p-4 border-b border-border bg-background/80 backdrop-blur-xl shrink-0">
-          <div onClick={() => router.push('/dashboard')} className="flex items-center gap-2 cursor-pointer">
+          <div onClick={() => router.push('/home')} className="flex items-center gap-2 cursor-pointer">
             <Rocket className="text-primary w-5 h-5" />
             <span className="font-headline font-semibold text-lg tracking-tight text-foreground/90">RiseForge</span>
           </div>

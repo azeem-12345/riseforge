@@ -23,10 +23,10 @@ export default function LandingPage() {
   const { user, isLoading } = useUser()
   const [activeWeek, setActiveWeek] = useState(1)
 
-  // Redirect to dashboard if logged in
+  // Redirect to home if logged in
   useEffect(() => {
     if (!isLoading && user) {
-      router.push('/dashboard')
+      router.push('/home')
     }
   }, [user, isLoading, router])
 
@@ -47,7 +47,7 @@ export default function LandingPage() {
       <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="text-center space-y-4">
           <div className="w-10 h-10 rounded-full border-4 border-primary/20 border-t-primary animate-spin mx-auto" />
-          <p className="text-muted-foreground text-sm font-semibold">Redirecting to Dashboard...</p>
+          <p className="text-muted-foreground text-sm font-semibold">Redirecting to Home...</p>
         </div>
       </div>
     )

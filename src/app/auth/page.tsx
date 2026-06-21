@@ -28,10 +28,10 @@ export default function AuthPage() {
   const { auth } = initializeFirebase();
   const { user, isLoading } = useUser();
 
-  // Redirect to dashboard if user is already logged in
+  // Redirect to home if user is already logged in
   useEffect(() => {
     if (!isLoading && user) {
-      router.push('/dashboard');
+      router.push('/home');
     }
   }, [user, isLoading, router]);
 
@@ -43,7 +43,7 @@ export default function AuthPage() {
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
-        router.push('/dashboard');
+        router.push('/home');
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
         router.push('/onboarding');
@@ -61,7 +61,7 @@ export default function AuthPage() {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      router.push('/dashboard');
+      router.push('/home');
     } catch (err: any) {
       setError(err.message || "Failed to sign in with Google.");
     } finally {
@@ -75,7 +75,7 @@ export default function AuthPage() {
     try {
       const provider = new FacebookAuthProvider();
       await signInWithPopup(auth, provider);
-      router.push('/dashboard');
+      router.push('/home');
     } catch (err: any) {
       setError(err.message || "Failed to sign in with Facebook.");
     } finally {

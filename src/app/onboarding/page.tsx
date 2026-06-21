@@ -137,7 +137,7 @@ export default function OnboardingPage() {
         founderStage: 'Dreamer',
         reputation: 100
       }))
-      router.push('/dashboard')
+      router.push('/home')
     }, 3000)
   }
 
