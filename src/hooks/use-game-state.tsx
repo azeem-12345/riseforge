@@ -109,7 +109,7 @@ const DEFAULT_STATE: GameState = {
   streak: 0,
   lastActive: Date.now(),
   completedLessons: [],
-  unlockedModules: ['dashboard', 'world-map', 'simulation', 'company', 'pitch-arena', 'challenge-arena', 'idea-lab', 'mentor', 'leaderboard'], 
+  unlockedModules: ['dashboard', 'world-map', 'challenge-arena', 'idea-lab', 'mentor', 'leaderboard'],
   seenTutorials: [],
   badges: [],
   onboarded: false,

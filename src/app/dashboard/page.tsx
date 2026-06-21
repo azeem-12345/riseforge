@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { 
   Zap, Trophy, Flame, Brain, Sparkles, ChevronRight, TrendingUp, 
   ShieldCheck, Globe, Target, ArrowUpRight, MessageSquare, Clock, 
-  Rocket, DollarSign, Building2, AlertCircle
+  Rocket, DollarSign, Building2, AlertCircle, Map, FlaskConical
 } from 'lucide-react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -196,9 +196,6 @@ export default function DashboardPage() {
                     <h2 className="text-base font-semibold tracking-tight text-foreground/90">Venture Portfolio</h2>
                     <p className="text-sm text-muted-foreground mt-0.5">Real-time status of your virtual business entities</p>
                   </div>
-                  <Button asChild variant="outline" size="sm" className="h-8 text-xs border-white/10 bg-white/[0.02] hover:bg-white/[0.05]">
-                    <Link href="/company">Manage Ventures</Link>
-                  </Button>
                 </div>
               </CardHeader>
               <CardContent>
@@ -312,21 +309,21 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="space-y-2.5">
                 <Button asChild className="w-full justify-between h-12 text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_15px_rgba(var(--primary)/0.3)] transition-all px-4 rounded-xl">
-                  <Link href="/simulation" className="flex items-center justify-between w-full">
-                    <span>Enter CEO Simulator</span>
-                    <Rocket className="w-4 h-4" />
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" className="w-full justify-between h-12 text-sm font-medium border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.06] text-foreground transition-colors px-4 rounded-xl">
-                  <Link href="/pitch-arena" className="flex items-center justify-between w-full">
-                    <span>Practice Board Pitch</span>
-                    <ArrowUpRight className="w-4 h-4 text-muted-foreground" />
+                  <Link href="/world-map" className="flex items-center justify-between w-full">
+                    <span>Resume Academy Path</span>
+                    <Map className="w-4 h-4" />
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="w-full justify-between h-12 text-sm font-medium border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.06] text-foreground transition-colors px-4 rounded-xl">
                   <Link href="/opportunity-scanner" className="flex items-center justify-between w-full">
                     <span>Opportunity Scanner</span>
                     <Globe className="w-4 h-4 text-muted-foreground" />
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="w-full justify-between h-12 text-sm font-medium border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.06] text-foreground transition-colors px-4 rounded-xl">
+                  <Link href="/idea-lab" className="flex items-center justify-between w-full">
+                    <span>Enter Idea Lab</span>
+                    <FlaskConical className="w-4 h-4 text-muted-foreground" />
                   </Link>
                 </Button>
               </CardContent>

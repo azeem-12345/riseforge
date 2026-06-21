@@ -12,9 +12,6 @@ import {
   Brain, 
   Menu,
   Trophy,
-  Building2,
-  Mic2,
-  Zap,
   Eye,
   Lock
 } from 'lucide-react'
@@ -32,10 +29,7 @@ import {
 const navItems = [
   { name: 'Home Base', icon: LayoutDashboard, href: '/dashboard', key: 'dashboard' },
   { name: 'Academy Path', icon: MapIcon, href: '/world-map', key: 'world-map' },
-  { name: 'Business Game', icon: Zap, href: '/simulation', key: 'simulation' },
   { name: 'Finding Problems', icon: Eye, href: '/opportunity-scanner', key: 'opportunity-scanner' },
-  { name: 'My Company', icon: Building2, href: '/company', key: 'company' },
-  { name: 'Pitch Room', icon: Mic2, href: '/pitch-arena', key: 'pitch-arena' },
   { name: 'Weekly Missions', icon: Sword, href: '/challenge-arena', key: 'challenge-arena' },
   { name: 'Idea Lab', icon: FlaskConical, href: '/idea-lab', key: 'idea-lab' },
   { name: 'Founder Mentor', icon: Brain, href: '/mentor', key: 'mentor' },
