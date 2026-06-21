@@ -68,12 +68,16 @@ export default function LeaderboardPage() {
   const globalRankings = useMemo(() => {
     if (!dbUsers) return []
     return [...dbUsers]
-      .sort((a, b) => Number(b.xp || 0) - Number(a.xp || 0))
+      .sort((a, b) => {
+        const xpA = Number(a.totalXp !== undefined ? a.totalXp : (a.xp || 0))
+        const xpB = Number(b.totalXp !== undefined ? b.totalXp : (b.xp || 0))
+        return xpB - xpA
+      })
       .map((player, idx) => ({
         id: player.id,
         name: player.name || 'Future Founder',
         levelTitle: player.levelTitle || 'Explorer',
-        xp: Number(player.xp || 0),
+        xp: Number(player.totalXp !== undefined ? player.totalXp : (player.xp || 0)),
         nation: player.nation || 'Global',
         pfp: player.pfp || '',
         rank: idx + 1,
@@ -374,7 +378,9 @@ export default function LeaderboardPage() {
               <div className="grid grid-cols-3 gap-3">
                 <div className="p-3 rounded-xl bg-black/[0.02] border border-black/[0.04] text-center shadow-sm">
                   <p className="text-[9px] uppercase font-black tracking-wider text-muted-foreground">Total XP</p>
-                  <p className="text-sm font-black text-primary">{Number(viewingPlayer.xp || 0).toLocaleString()}</p>
+                  <p className="text-sm font-black text-primary">
+                    {Number(viewingPlayer.totalXp !== undefined ? viewingPlayer.totalXp : (viewingPlayer.xp || 0)).toLocaleString()}
+                  </p>
                 </div>
                 <div className="p-3 rounded-xl bg-black/[0.02] border border-black/[0.04] text-center shadow-sm">
                   <p className="text-[9px] uppercase font-black tracking-wider text-muted-foreground">Lessons</p>

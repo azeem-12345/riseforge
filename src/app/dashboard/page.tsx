@@ -15,6 +15,7 @@ import {
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { ACADEMY_CONTENT } from '@/lib/academy-data'
 
 export default function DashboardPage() {
   const { state, updateState, isLoaded, xpToNext } = useGameState()
@@ -84,30 +85,20 @@ export default function DashboardPage() {
     }
   ]
 
-  // Humanized and easy-to-read student activities
-  const activityLogs = [
-    {
-      title: "Completed Lesson: How to Start a Startup",
-      subtitle: "Learned the difference between standard businesses and high-growth ideas.",
-      time: "2 hours ago",
-      icon: <Trophy className="w-3.5 h-3.5 text-amber-500" />,
-      xp: "+50 XP"
-    },
-    {
-      title: "Earned Leadership Experience",
-      subtitle: "Completed Week 2 course modules and leveled up smart coordination skills.",
-      time: "Yesterday",
+  // Dynamically build learning logs from actual completed lessons
+  const completedWeeks = state.completedLessons || []
+  const activityLogs = completedWeeks.map((lessonId, idx) => {
+    const weekData = ACADEMY_CONTENT[lessonId]
+    const title = weekData ? `Completed Lesson: ${weekData.title}` : `Completed Lesson: ${lessonId}`
+    const subtitle = weekData ? weekData.summary : `Successfully completed course modules.`
+    return {
+      title,
+      subtitle,
+      time: `Week ${weekData ? weekData.week : idx + 1}`,
       icon: <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />,
-      xp: "+50 XP"
-    },
-    {
-      title: "Leveled Up: Smart Planning",
-      subtitle: "Completed Week 1 introductory exercises on Y Combinator methods.",
-      time: "3 days ago",
-      icon: <Sparkles className="w-3.5 h-3.5 text-purple-500" />,
-      xp: "+50 XP"
+      xp: `+${weekData?.xpReward || 50} XP`
     }
-  ]
+  })
 
   // YC-Inspired tips rewritten in student-friendly tone
   const startupTips = [
@@ -124,7 +115,19 @@ export default function DashboardPage() {
   ]
 
   // Animation constants
-  const cardHoverEffect = {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05
+      }
+    }
+  }
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } },
     hover: { scale: 1.02, y: -4, transition: { type: "spring", stiffness: 300, damping: 15 } }
   }
 
@@ -220,14 +223,19 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* Stats Grid - Pure Educational Metrics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4"
+        >
           {[
             { label: "Lessons Completed", value: `${state.completedLessons.length} / 10`, icon: <BookOpen className="w-4 h-4" />, color: "text-blue-500", bg: "bg-blue-500/10" },
             { label: "Learning Streak", value: `${state.streak || 0} Days`, icon: <Flame className="w-4 h-4" />, color: "text-orange-500", bg: "bg-orange-500/10" },
             { label: "My Learning Stage", value: state.levelTitle || "Explorer", icon: <Trophy className="w-4 h-4" />, color: "text-amber-500", bg: "bg-amber-500/10" },
             { label: "Badges Earned", value: `${state.badges?.length || 0} Badges`, icon: <Sparkles className="w-4 h-4" />, color: "text-purple-500", bg: "bg-purple-500/10" },
           ].map((stat, i) => (
-            <motion.div key={i} whileHover="hover" variants={cardHoverEffect}>
+            <motion.div key={i} variants={cardVariants} whileHover="hover">
               <Card className="glass-card h-full transition-all hover:border-border/80 shadow-sm cursor-default">
                 <CardContent className="p-5 flex flex-col justify-between h-full">
                   <div className="flex justify-between items-start">
@@ -243,7 +251,7 @@ export default function DashboardPage() {
               </Card>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Main Dashboard Layout Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -289,28 +297,45 @@ export default function DashboardPage() {
                   <p className="text-sm text-muted-foreground mt-0.5 font-sans">A history of lessons read and milestones completed:</p>
                 </CardHeader>
                 <CardContent className="pt-2">
-                  <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-[15px] before:w-px before:bg-border">
-                    {activityLogs.map((event, index) => (
-                      <div key={index} className="flex gap-5 relative items-start text-sm">
-                        <div className="w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center flex-shrink-0 z-10 shadow-sm">
-                          {event.icon}
-                        </div>
-                        <div className="space-y-1 flex-1 min-w-0 pt-1">
-                          <div className="flex justify-between items-start gap-2">
-                            <p className="font-medium text-foreground/90 font-sans text-xs">{event.title}</p>
-                            <span className="font-mono text-[10px] font-semibold text-emerald-600 bg-emerald-600/10 px-2 py-0.5 rounded-md flex-shrink-0">
-                              {event.xp}
-                            </span>
-                          </div>
-                          <p className="text-muted-foreground/80 leading-relaxed text-[11px] font-sans">{event.subtitle}</p>
-                          <p className="text-[10px] text-muted-foreground/50 flex items-center gap-1.5 pt-1">
-                            <Clock className="w-3.5 h-3.5" />
-                            {event.time}
-                          </p>
-                        </div>
+                  {activityLogs.length === 0 ? (
+                    <div className="py-8 text-center space-y-4">
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto text-primary">
+                        <BookOpen className="w-6 h-6" />
                       </div>
-                    ))}
-                  </div>
+                      <div className="space-y-1 px-4">
+                        <h4 className="text-sm font-bold text-foreground">No lessons completed yet</h4>
+                        <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed font-sans">
+                          Your learning logs will appear here as soon as you complete academy modules.
+                        </p>
+                      </div>
+                      <Button asChild size="sm" className="rounded-xl font-bold text-xs h-9 cursor-pointer shadow-sm">
+                        <Link href="/world-map">Start Your First Lesson</Link>
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-[15px] before:w-px before:bg-border">
+                      {activityLogs.map((event, index) => (
+                        <div key={index} className="flex gap-5 relative items-start text-sm">
+                          <div className="w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center flex-shrink-0 z-10 shadow-sm">
+                            {event.icon}
+                          </div>
+                          <div className="space-y-1 flex-1 min-w-0 pt-1">
+                            <div className="flex justify-between items-start gap-2">
+                              <p className="font-medium text-foreground/90 font-sans text-xs">{event.title}</p>
+                              <span className="font-mono text-[10px] font-semibold text-emerald-600 bg-emerald-600/10 px-2 py-0.5 rounded-md flex-shrink-0">
+                                {event.xp}
+                              </span>
+                            </div>
+                            <p className="text-muted-foreground/80 leading-relaxed text-[11px] font-sans">{event.subtitle}</p>
+                            <p className="text-[10px] text-muted-foreground/50 flex items-center gap-1.5 pt-1">
+                              <Clock className="w-3.5 h-3.5" />
+                              {event.time}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>

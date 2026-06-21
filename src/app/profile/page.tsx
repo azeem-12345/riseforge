@@ -100,7 +100,7 @@ export default function ProfilePage() {
   }
 
   // Share Message string
-  const shareMessage = `🚀 I'm learning how to start a startup on RiseForge! Level: ${state.levelTitle || 'Explorer'} (${state.level || 1}) | XP: ${Number(state.xp || 0).toLocaleString()} | Lessons Mastered: ${state.completedLessons?.length || 0}/10. Nation: ${state.nation || 'Global'}. Join me in forging the future: https://riseforge.vercel.app/`
+  const shareMessage = `🚀 I'm learning how to start a startup on RiseForge! Level: ${state.levelTitle || 'Explorer'} (${state.level || 1}) | Total XP: ${Number(state.totalXp !== undefined ? state.totalXp : (state.xp || 0)).toLocaleString()} | Lessons Mastered: ${state.completedLessons?.length || 0}/10. Nation: ${state.nation || 'Global'}. Join me in forging the future: https://riseforge.vercel.app/`
 
   // Compress & resize uploaded file to 128x128 base64 JPEG
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -187,10 +187,11 @@ export default function ProfilePage() {
   }
 
   const currentXpValue = Number(state.xp || 0)
+  const totalXpValue = Number(state.totalXp !== undefined ? state.totalXp : (state.xp || 0))
 
   const stats = [
     { label: 'Current Streak', value: `${state.streak} Days`, icon: Flame, color: 'text-orange-500' },
-    { label: 'Total XP', value: currentXpValue.toLocaleString(), icon: Zap, color: 'text-primary' },
+    { label: 'Total XP', value: totalXpValue.toLocaleString(), icon: Zap, color: 'text-primary' },
     { label: 'Lessons Mastered', value: state.completedLessons.length, icon: Target, color: 'text-accent' },
     { label: 'Founder Level', value: state.level, icon: Trophy, color: 'text-violet-500' },
   ]

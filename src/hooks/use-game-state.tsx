@@ -74,6 +74,7 @@ export interface GameState {
   nation: string
   pfp?: string
   xp: number
+  totalXp: number
   level: number
   levelTitle: UserLevel
   founderStage: FounderStage
@@ -109,6 +110,7 @@ const DEFAULT_STATE: GameState = {
   nation: 'Global',
   pfp: '',
   xp: 0,
+  totalXp: 0,
   level: 1,
   levelTitle: 'Explorer',
   founderStage: 'Dreamer',
@@ -252,8 +254,9 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
 
   const addXP = (amount: number) => {
     updateState(prev => {
-      let currentTotalXP = prev.xp + amount
-      let currentLevel = prev.level
+      let currentTotalXP = (prev.xp || 0) + amount
+      let cumulativeXP = prev.totalXp !== undefined ? prev.totalXp + amount : (50 * (Math.pow(2, (prev.level || 1) - 1) - 1) + (prev.xp || 0) + amount)
+      let currentLevel = prev.level || 1
       let leveledUp = false
       
       let nextLevelThreshold = getXPForLevel(currentLevel)
@@ -274,6 +277,7 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
       return { 
         ...prev, 
         xp: currentTotalXP, 
+        totalXp: cumulativeXP,
         level: currentLevel, 
         levelTitle: titles[titleIndex],
         founderStage: newStage,
