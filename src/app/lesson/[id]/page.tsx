@@ -101,11 +101,11 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
     <div className="min-h-screen bg-background text-foreground font-body overflow-y-auto">
       <LevelUpModal />
       <div className="max-w-5xl mx-auto min-h-screen flex flex-col px-6 md:px-10 pb-24">
-        {/* Top Header */}
-        <div className="flex items-center justify-between py-3 border-b border-border shrink-0">
+        {/* Sticky Top Header */}
+        <div className="sticky top-0 bg-background/95 backdrop-blur-md z-30 flex items-center justify-between py-3 border-b border-border shrink-0 -mx-6 md:-mx-10 px-6 md:px-10 mb-6">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={() => router.push('/world-map')} className="h-8 w-8 text-muted-foreground hover:text-primary transition-colors">
-              <ArrowLeft className="w-3.5 h-3.5" />
+              <ArrowLeft className="w-4 h-4" />
             </Button>
             <div className="space-y-0.5">
               <h1 className="text-[12px] font-bold tracking-tight uppercase leading-none">Week {lesson.week}: {lesson.title}</h1>
@@ -164,16 +164,43 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                         <div className="space-y-6 pt-4">
                            <div className="text-sm leading-relaxed text-foreground/80 space-y-6">
                              {lesson.theory.split('\n').map((line, i) => {
-                               if (line.startsWith('## ')) {
+                               const trimmed = line.trim();
+                               if (trimmed === '') return null;
+
+                               // 1. Image tags
+                               if (trimmed.startsWith('!!IMAGE:')) {
+                                 const imageId = trimmed.replace('!!IMAGE:', '').replace('!!', '').trim()
+                                 const imageData = PlaceHolderImages.find(img => img.id === imageId)
+                                 if (imageData) {
+                                   return (
+                                     <div key={i} className="my-10 flex flex-col items-center">
+                                       <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-border shadow-sm max-w-4xl mx-auto group">
+                                         <Image 
+                                           src={imageData.imageUrl} 
+                                           alt={imageData.description}
+                                           fill
+                                           className="object-cover object-center group-hover:scale-102 transition-transform duration-700"
+                                         />
+                                       </div>
+                                       <p className="text-[10px] font-semibold text-muted-foreground mt-4 tracking-widest uppercase">{imageData.description}</p>
+                                     </div>
+                                   )
+                                 }
+                               }
+
+                               // 2. Headings (strip all ## or # symbols)
+                               if (trimmed.startsWith('#') || trimmed.startsWith('## ') || trimmed.startsWith('### ')) {
+                                 const cleanText = trimmed.replace(/^#+\s*/, '').replaceAll('**', '').replaceAll('*', '').trim();
                                  return (
-                                   <h3 key={i} className="text-lg font-semibold text-primary/95 mt-10 mb-4 tracking-wide border-l-2 border-primary pl-4">
-                                     {line.replace('## ', '')}
+                                   <h3 key={i} className="text-lg font-bold text-primary mt-8 mb-4 tracking-wide border-l-2 border-primary pl-4 font-sans">
+                                     {cleanText}
                                    </h3>
                                  )
                                }
-                               
-                               if (line.startsWith('> ')) {
-                                 const cleanLine = line.replace(/^>\s*/, '');
+
+                               // 3. Blockquotes (strip > markers and markdown bold stars)
+                               if (trimmed.startsWith('> ')) {
+                                 const cleanLine = trimmed.replace(/^>\s*/, '');
                                  let type = 'info';
                                  let content = cleanLine;
                                  if (cleanLine.startsWith('[!IMPORTANT]')) {
@@ -187,9 +214,10 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                                    content = cleanLine.replace('[!TIP]', '').trim();
                                  }
                                  
+                                 const cleanContent = content.replaceAll('**', '').replaceAll('*', '').trim();
                                  return (
                                    <div key={i} className={cn(
-                                     "p-5 rounded-xl border my-6 flex gap-4 text-[15px] leading-relaxed",
+                                     "p-5 rounded-xl border my-6 flex gap-4 text-[14px] leading-relaxed font-sans",
                                      type === 'important' && "bg-primary/5 border-primary/20 text-foreground",
                                      type === 'warning' && "bg-amber-500/5 border-amber-500/20 text-foreground",
                                      type === 'tip' && "bg-emerald-500/5 border-emerald-500/20 text-foreground",
@@ -197,47 +225,41 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                                    )}>
                                      <Sparkles className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                                      <div className="font-medium">
-                                       {content}
+                                       {cleanContent}
                                      </div>
                                    </div>
                                  )
                                }
 
-                               if (line.startsWith('!!IMAGE:')) {
-                                 const imageId = line.replace('!!IMAGE:', '').replace('!!', '').trim()
-                                 const imageData = PlaceHolderImages.find(img => img.id === imageId)
-                                 if (imageData) {
-                                   return (
-                                     <div key={i} className="my-10 flex flex-col items-center">
-                                       <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-border shadow-[0_0_40px_rgba(var(--primary)/0.05)] max-w-4xl mx-auto group">
-                                         <div className="absolute inset-0 bg-primary/5 group-hover:bg-transparent transition-colors z-10 pointer-events-none" />
-                                         <Image 
-                                           src={imageData.imageUrl} 
-                                           alt={imageData.description}
-                                           fill
-                                           className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                                           data-ai-hint={imageData.imageHint}
-                                         />
-                                       </div>
-                                       <p className="text-[10px] font-semibold text-muted-foreground mt-4 tracking-widest uppercase">{imageData.description}</p>
-                                     </div>
-                                   )
-                                 }
-                               }
-
-                               if (line.startsWith('|')) {
-                                 const cells = line.split('|').filter(c => c.trim() !== '').map(c => c.trim());
-                                 if (cells.length === 0 || line.includes('---')) return null;
+                               // 4. Tables (strip bold stars)
+                               if (trimmed.startsWith('|')) {
+                                 const cells = trimmed.split('|').filter(c => c.trim() !== '').map(c => c.trim());
+                                 if (cells.length === 0 || trimmed.includes('---')) return null;
+                                 const cleanCol1 = cells[0].replaceAll('**', '').replaceAll('*', '');
+                                 const cleanCol2 = cells[1].replaceAll('**', '').replaceAll('*', '');
                                  return (
-                                   <div key={i} className="grid grid-cols-[1fr_2fr] gap-6 py-4 border-b border-border last:border-0">
-                                     <span className="text-xs font-semibold text-primary/80 uppercase tracking-wider">{cells[0]}</span>
-                                     <span className="text-[14px] text-muted-foreground/95 font-medium leading-relaxed">{cells[1]}</span>
+                                   <div key={i} className="grid grid-cols-[1fr_2fr] gap-6 py-3.5 border-b border-border last:border-0 font-sans">
+                                     <span className="text-xs font-semibold text-primary/80 uppercase tracking-wider">{cleanCol1}</span>
+                                     <span className="text-[14px] text-muted-foreground/95 font-medium leading-relaxed">{cleanCol2}</span>
                                    </div>
                                  )
                                }
 
-                               if (line.trim() === '') return null
-                               return <p key={i} className="font-normal">{line}</p>
+                               // 5. Bullet Lists (strip bullet symbol and show styled dots)
+                               if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+                                 const content = trimmed.replace(/^[-*]\s+/, '');
+                                 const cleanContent = content.replaceAll('**', '').replaceAll('*', '').trim();
+                                 return (
+                                   <div key={i} className="flex items-start gap-2.5 my-2 pl-4 text-foreground/80 font-sans">
+                                     <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2.5 shrink-0" />
+                                     <span className="text-sm font-normal leading-relaxed">{cleanContent}</span>
+                                   </div>
+                                 )
+                               }
+
+                               // 6. Regular paragraphs (strip bold stars)
+                               const cleanParagraph = trimmed.replaceAll('**', '').replaceAll('*', '');
+                               return <p key={i} className="font-normal text-[15px] leading-relaxed text-foreground/90 font-sans my-3">{cleanParagraph}</p>
                              })}
                            </div>
                         </div>

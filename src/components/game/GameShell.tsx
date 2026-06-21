@@ -29,9 +29,7 @@ import {
 const navItems = [
   { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard', key: 'dashboard' },
   { name: 'How to Start a Startup', icon: MapIcon, href: '/world-map', key: 'world-map' },
-  { name: 'Find Problems', icon: Eye, href: '/opportunity-scanner', key: 'opportunity-scanner' },
   { name: 'Weekly Challenges', icon: Sword, href: '/challenge-arena', key: 'challenge-arena' },
-  { name: 'Idea Lab', icon: FlaskConical, href: '/idea-lab', key: 'idea-lab' },
   { name: 'Founder Mentor', icon: Brain, href: '/mentor', key: 'mentor' },
   { name: 'Leaderboard', icon: Trophy, href: '/leaderboard', key: 'leaderboard' },
 ]
