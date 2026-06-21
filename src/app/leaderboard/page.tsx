@@ -8,7 +8,7 @@ import { Trophy, Medal, Star, UserPlus, Globe, Flag, Brain, Zap, Target, Award }
 import { cn } from '@/lib/utils'
 import { useCollection, useAuth } from '@/firebase'
 import { useGameState, GameState } from '@/hooks/use-game-state'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 // Country flag emoji mapping helper
 function getCountryFlag(nationName: string): string {
@@ -64,17 +64,16 @@ export default function LeaderboardPage() {
   // Fetch all users from Firestore
   const { data: dbUsers, isLoading } = useCollection<GameState & { id: string }>('users')
 
-  // Parse and sort all onboarded users
+  // Parse and sort all users who have signed in (no strict filters)
   const globalRankings = useMemo(() => {
     if (!dbUsers) return []
-    return dbUsers
-      .filter(u => u.name && u.xp !== undefined) // Filter out incomplete profiles
-      .sort((a, b) => b.xp - a.xp)
+    return [...dbUsers]
+      .sort((a, b) => Number(b.xp || 0) - Number(a.xp || 0))
       .map((player, idx) => ({
         id: player.id,
         name: player.name || 'Future Founder',
         levelTitle: player.levelTitle || 'Explorer',
-        xp: player.xp || 0,
+        xp: Number(player.xp || 0),
         nation: player.nation || 'Global',
         pfp: player.pfp || '',
         rank: idx + 1,
@@ -137,7 +136,7 @@ export default function LeaderboardPage() {
                 {secondPlace ? secondPlace.name : "Waiting..."}
               </p>
               <p className="text-[10px] sm:text-xs text-muted-foreground font-semibold">
-                {secondPlace ? `${secondPlace.xp.toLocaleString()} XP` : "Slot Open"}
+                {secondPlace ? `${Number(secondPlace.xp).toLocaleString()} XP` : "Slot Open"}
               </p>
               {secondPlace && (
                 <span className="inline-block mt-0.5 text-xs" title={secondPlace.nation}>
@@ -183,7 +182,7 @@ export default function LeaderboardPage() {
                 {firstPlace ? firstPlace.name : "Waiting..."}
               </p>
               <p className="text-[10px] sm:text-xs text-muted-foreground font-semibold">
-                {firstPlace ? `${firstPlace.xp.toLocaleString()} XP` : "Slot Open"}
+                {firstPlace ? `${Number(firstPlace.xp).toLocaleString()} XP` : "Slot Open"}
               </p>
               {firstPlace && (
                 <span className="inline-block mt-0.5 text-xs" title={firstPlace.nation}>
@@ -224,7 +223,7 @@ export default function LeaderboardPage() {
                 {thirdPlace ? thirdPlace.name : "Waiting..."}
               </p>
               <p className="text-[10px] sm:text-xs text-muted-foreground font-semibold">
-                {thirdPlace ? `${thirdPlace.xp.toLocaleString()} XP` : "Slot Open"}
+                {thirdPlace ? `${Number(thirdPlace.xp).toLocaleString()} XP` : "Slot Open"}
               </p>
               {thirdPlace && (
                 <span className="inline-block mt-0.5 text-xs" title={thirdPlace.nation}>
@@ -254,7 +253,7 @@ export default function LeaderboardPage() {
                 key={player.id} 
                 onClick={() => handleOpenProfile(player.id, player)}
                 className={cn(
-                 "flex items-center gap-4 p-4 rounded-2xl transition-all border cursor-pointer hover:-translate-y-0.5 active:translate-y-0",
+                 "flex items-center gap-4 p-4 rounded-2xl transition-all border cursor-pointer hover:-translate-y-0.5 active:translate-y-0 relative z-10",
                  player.isCurrentUser 
                    ? "bg-primary/10 border-primary/30 glow-primary" 
                    : "bg-card hover:bg-muted border-black/[0.06]"
@@ -282,7 +281,7 @@ export default function LeaderboardPage() {
                   <p className="text-xs text-muted-foreground font-semibold">{player.levelTitle}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-primary text-base">{player.xp.toLocaleString()} XP</p>
+                  <p className="font-bold text-primary text-base">{Number(player.xp).toLocaleString()} XP</p>
                   <p className="text-[11px] text-muted-foreground uppercase font-black tracking-wider flex items-center gap-1 justify-end">
                     <span className="text-sm" title={player.nation}>{getCountryFlag(player.nation)}</span>
                     <span className="hidden sm:inline">{player.nation}</span>
@@ -298,7 +297,7 @@ export default function LeaderboardPage() {
 
   return (
     <GameShell>
-      <div className="max-w-4xl mx-auto space-y-8 pb-12">
+      <div className="max-w-4xl mx-auto space-y-8 pb-12 relative z-10">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-xl bg-yellow-500/10 text-yellow-600">
@@ -339,102 +338,105 @@ export default function LeaderboardPage() {
       </div>
 
       {/* Interactive Player Detail Modal Overlay */}
-      {viewingPlayer && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-card w-full max-w-md rounded-3xl border border-black/[0.08] p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto"
-          >
-            {/* Modal Header */}
-            <div className="flex justify-between items-start">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl overflow-hidden bg-accent/5 border border-accent/20 flex items-center justify-center text-2xl font-black text-accent shrink-0 shadow-sm">
-                  {viewingPlayer.pfp ? (
-                    <img src={viewingPlayer.pfp} alt="Avatar" className="w-full h-full object-cover" />
+      <AnimatePresence>
+        {viewingPlayer && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[150] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-card w-full max-w-md rounded-3xl border border-black/[0.08] p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto"
+            >
+              {/* Modal Header */}
+              <div className="flex justify-between items-start">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-2xl overflow-hidden bg-accent/5 border border-accent/20 flex items-center justify-center text-2xl font-black text-accent shrink-0 shadow-sm">
+                    {viewingPlayer.pfp ? (
+                      <img src={viewingPlayer.pfp} alt="Avatar" className="w-full h-full object-cover" />
+                    ) : (
+                      <img src={`https://picsum.photos/seed/${viewingPlayer.name}/150/150`} alt="Avatar" className="w-full h-full object-cover" />
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-headline font-black flex items-center gap-2 leading-none">
+                      {viewingPlayer.name} {getCountryFlag(viewingPlayer.nation)}
+                    </h3>
+                    <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mt-1.5">
+                      Level {viewingPlayer.level || 1} • {viewingPlayer.levelTitle || 'Explorer'}
+                    </p>
+                    <p className="text-[10px] text-primary uppercase font-black tracking-widest mt-0.5">{viewingPlayer.founderStage || 'Dreamer'}</p>
+                  </div>
+                </div>
+                <button onClick={() => setViewingPlayer(null)} className="text-muted-foreground hover:text-foreground font-black text-sm p-1 cursor-pointer">✕</button>
+              </div>
+
+              {/* Quick Metrics Grid */}
+              <div className="grid grid-cols-3 gap-3">
+                <div className="p-3 rounded-xl bg-black/[0.02] border border-black/[0.04] text-center shadow-sm">
+                  <p className="text-[9px] uppercase font-black tracking-wider text-muted-foreground">Total XP</p>
+                  <p className="text-sm font-black text-primary">{Number(viewingPlayer.xp || 0).toLocaleString()}</p>
+                </div>
+                <div className="p-3 rounded-xl bg-black/[0.02] border border-black/[0.04] text-center shadow-sm">
+                  <p className="text-[9px] uppercase font-black tracking-wider text-muted-foreground">Lessons</p>
+                  <p className="text-sm font-black text-primary">{(viewingPlayer.completedLessons || []).length}/10</p>
+                </div>
+                <div className="p-3 rounded-xl bg-black/[0.02] border border-black/[0.04] text-center shadow-sm">
+                  <p className="text-[9px] uppercase font-black tracking-wider text-muted-foreground">Streak 🔥</p>
+                  <p className="text-sm font-black text-orange-500">{viewingPlayer.streak || 0} Days</p>
+                </div>
+              </div>
+
+              {/* Cognitive Skills Progress Bars */}
+              <div className="space-y-2">
+                <p className="text-[10px] uppercase font-black tracking-wider text-muted-foreground">Founder Cognitive DNA</p>
+                <div className="space-y-2.5 border border-black/[0.05] p-4 rounded-2xl bg-black/[0.01]">
+                  {[
+                    { label: 'Strategic Thinking', val: viewingPlayer.skills?.strategicThinking || 10 },
+                    { label: 'Market Awareness', val: viewingPlayer.skills?.marketAwareness || 10 },
+                    { label: 'Risk Analysis', val: viewingPlayer.skills?.riskAnalysis || 10 },
+                    { label: 'Leadership', val: viewingPlayer.skills?.leadership || 10 },
+                    { label: 'Negotiation', val: viewingPlayer.skills?.negotiation || 10 },
+                  ].map(skill => (
+                    <div key={skill.label} className="space-y-1">
+                      <div className="flex justify-between text-[11px] font-bold">
+                        <span className="text-muted-foreground">{skill.label}</span>
+                        <span className="text-primary">{skill.val}%</span>
+                      </div>
+                      <div className="w-full bg-black/5 h-1.5 rounded-full overflow-hidden">
+                        <div className="bg-primary h-full rounded-full transition-all duration-500" style={{ width: `${Math.min(skill.val, 100)}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Badges Earned */}
+              <div className="space-y-2">
+                <p className="text-[10px] uppercase font-black tracking-wider text-muted-foreground">Unlocked Achievements</p>
+                <div className="flex flex-wrap gap-2 pt-0.5">
+                  {viewingPlayer.badges && viewingPlayer.badges.length > 0 ? (
+                    viewingPlayer.badges.map((badge: any, idx: number) => (
+                      <span key={idx} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/5 text-primary border border-primary/10 text-[11px] font-bold shadow-sm">
+                        <Award className="w-3.5 h-3.5" /> {badge.name}
+                      </span>
+                    ))
                   ) : (
-                    <img src={`https://picsum.photos/seed/${viewingPlayer.name}/150/150`} alt="Avatar" className="w-full h-full object-cover" />
+                    <p className="text-xs text-muted-foreground italic pl-1">No custom certifications unlocked yet.</p>
                   )}
                 </div>
-                <div>
-                  <h3 className="text-lg font-headline font-black flex items-center gap-2 leading-none">
-                    {viewingPlayer.name} {getCountryFlag(viewingPlayer.nation)}
-                  </h3>
-                  <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mt-1.5">
-                    Level {viewingPlayer.level || 1} • {viewingPlayer.levelTitle || 'Explorer'}
-                  </p>
-                  <p className="text-[10px] text-primary uppercase font-black tracking-widest mt-0.5">{viewingPlayer.founderStage || 'Dreamer'}</p>
-                </div>
               </div>
-              <button onClick={() => setViewingPlayer(null)} className="text-muted-foreground hover:text-foreground font-black text-sm p-1 cursor-pointer">✕</button>
-            </div>
 
-            {/* Quick Metrics Grid */}
-            <div className="grid grid-cols-3 gap-3">
-              <div className="p-3 rounded-xl bg-black/[0.02] border border-black/[0.04] text-center shadow-sm">
-                <p className="text-[9px] uppercase font-black tracking-wider text-muted-foreground">Total XP</p>
-                <p className="text-sm font-black text-primary">{(viewingPlayer.xp || 0).toLocaleString()}</p>
-              </div>
-              <div className="p-3 rounded-xl bg-black/[0.02] border border-black/[0.04] text-center shadow-sm">
-                <p className="text-[9px] uppercase font-black tracking-wider text-muted-foreground">Lessons</p>
-                <p className="text-sm font-black text-primary">{(viewingPlayer.completedLessons || []).length}/10</p>
-              </div>
-              <div className="p-3 rounded-xl bg-black/[0.02] border border-black/[0.04] text-center shadow-sm">
-                <p className="text-[9px] uppercase font-black tracking-wider text-muted-foreground">Streak 🔥</p>
-                <p className="text-sm font-black text-orange-500">{viewingPlayer.streak || 0} Days</p>
-              </div>
-            </div>
-
-            {/* Cognitive Skills Progress Bars */}
-            <div className="space-y-2">
-              <p className="text-[10px] uppercase font-black tracking-wider text-muted-foreground">Founder Cognitive DNA</p>
-              <div className="space-y-2.5 border border-black/[0.05] p-4 rounded-2xl bg-black/[0.01]">
-                {[
-                  { label: 'Strategic Thinking', val: viewingPlayer.skills?.strategicThinking || 10 },
-                  { label: 'Market Awareness', val: viewingPlayer.skills?.marketAwareness || 10 },
-                  { label: 'Risk Analysis', val: viewingPlayer.skills?.riskAnalysis || 10 },
-                  { label: 'Leadership', val: viewingPlayer.skills?.leadership || 10 },
-                  { label: 'Negotiation', val: viewingPlayer.skills?.negotiation || 10 },
-                ].map(skill => (
-                  <div key={skill.label} className="space-y-1">
-                    <div className="flex justify-between text-[11px] font-bold">
-                      <span className="text-muted-foreground">{skill.label}</span>
-                      <span className="text-primary">{skill.val}%</span>
-                    </div>
-                    <div className="w-full bg-black/5 h-1.5 rounded-full overflow-hidden">
-                      <div className="bg-primary h-full rounded-full transition-all duration-500" style={{ width: `${Math.min(skill.val, 100)}%` }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Badges Earned */}
-            <div className="space-y-2">
-              <p className="text-[10px] uppercase font-black tracking-wider text-muted-foreground">Unlocked Achievements</p>
-              <div className="flex flex-wrap gap-2 pt-0.5">
-                {viewingPlayer.badges && viewingPlayer.badges.length > 0 ? (
-                  viewingPlayer.badges.map((badge: any, idx: number) => (
-                    <span key={idx} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/5 text-primary border border-primary/10 text-[11px] font-bold shadow-sm">
-                      <Award className="w-3.5 h-3.5" /> {badge.name}
-                    </span>
-                  ))
-                ) : (
-                  <p className="text-xs text-muted-foreground italic pl-1">No custom certifications unlocked yet.</p>
-                )}
-              </div>
-            </div>
-
-            {/* Close Button */}
-            <button 
-              onClick={() => setViewingPlayer(null)}
-              className="w-full p-3 rounded-xl bg-primary text-white font-bold hover:bg-primary/95 text-sm transition-all shadow-md shadow-primary/10 cursor-pointer text-center"
-            >
-              Close Profile Card
-            </button>
-          </motion.div>
-        </div>
-      )}
+              {/* Close Button */}
+              <button 
+                onClick={() => setViewingPlayer(null)}
+                className="w-full p-3 rounded-xl bg-primary text-white font-bold hover:bg-primary/95 text-sm transition-all shadow-md shadow-primary/10 cursor-pointer text-center"
+              >
+                Close Profile Card
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </GameShell>
   )
 }

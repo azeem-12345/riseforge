@@ -32,7 +32,7 @@ import { cn } from '@/lib/utils'
 import { useState, useEffect } from 'react'
 import { useUser, useAuth } from '@/firebase'
 import { signOut } from 'firebase/auth'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const THEME_PRESETS = [
   { name: 'Electric Blue', primary: '217 91% 45%', accent: '199 89% 48%' },
@@ -54,6 +54,9 @@ export default function ProfilePage() {
   const [tempOtherNation, setTempOtherNation] = useState('')
   const [tempPfp, setTempPfp] = useState(state.pfp || '')
   const [error, setError] = useState('')
+
+  // Share Modal States
+  const [isSharing, setIsSharing] = useState(false)
 
   // Sync state values when modal opens
   useEffect(() => {
@@ -96,17 +99,8 @@ export default function ProfilePage() {
     return `Joined ${monthNames[date.getMonth()]} ${date.getFullYear()}`
   }
 
-  // Copy status update to clipboard
-  const handleShareJourney = () => {
-    const message = `🚀 I am building my startup skills on RiseForge! Level: ${state.levelTitle} (${state.level}) | XP: ${state.xp} | Lessons Completed: ${state.completedLessons.length}/10. Nation: ${state.nation || 'Global'}. Join me in forging the future! https://riseforge.vercel.app/`
-    navigator.clipboard.writeText(message)
-      .then(() => {
-        alert("Your journey stats have been copied to the clipboard! Share it with your friends 🚀")
-      })
-      .catch(err => {
-        console.error("Failed to copy path: ", err)
-      })
-  }
+  // Share Message string
+  const shareMessage = `🚀 I'm learning how to start a startup on RiseForge! Level: ${state.levelTitle || 'Explorer'} (${state.level || 1}) | XP: ${Number(state.xp || 0).toLocaleString()} | Lessons Mastered: ${state.completedLessons?.length || 0}/10. Nation: ${state.nation || 'Global'}. Join me in forging the future: https://riseforge.vercel.app/`
 
   // Compress & resize uploaded file to 128x128 base64 JPEG
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -192,16 +186,18 @@ export default function ProfilePage() {
     setIsEditing(false)
   }
 
+  const currentXpValue = Number(state.xp || 0)
+
   const stats = [
     { label: 'Current Streak', value: `${state.streak} Days`, icon: Flame, color: 'text-orange-500' },
-    { label: 'Total XP', value: state.xp.toLocaleString(), icon: Zap, color: 'text-primary' },
+    { label: 'Total XP', value: currentXpValue.toLocaleString(), icon: Zap, color: 'text-primary' },
     { label: 'Lessons Mastered', value: state.completedLessons.length, icon: Target, color: 'text-accent' },
     { label: 'Founder Level', value: state.level, icon: Trophy, color: 'text-violet-500' },
   ]
 
   return (
     <GameShell>
-      <div className="max-w-6xl mx-auto space-y-8 pb-20">
+      <div className="max-w-6xl mx-auto space-y-8 pb-20 relative z-10">
         {/* Profile Header */}
         <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 pb-4 border-b border-black/[0.06]">
           <div className="flex items-center gap-6">
@@ -244,7 +240,7 @@ export default function ProfilePage() {
             <Button 
               variant="outline" 
               size="sm" 
-              onClick={handleShareJourney}
+              onClick={() => setIsSharing(true)}
               className="rounded-xl border-black/[0.08] hover:bg-black/5 h-9 text-[10px] font-black uppercase tracking-widest flex-1 sm:flex-initial"
             >
               <Share2 className="w-4 h-4 mr-2" /> Share Journey
@@ -294,11 +290,11 @@ export default function ProfilePage() {
                   <div className="flex justify-between items-end">
                     <div className="space-y-1">
                       <p className="text-[10px] text-muted-foreground uppercase font-black">Progress to Level {state.level + 1}</p>
-                      <h4 className="text-xl font-black tabular-nums">{state.xp} / {xpToNext} XP</h4>
+                      <h4 className="text-xl font-black tabular-nums">{currentXpValue} / {xpToNext} XP</h4>
                     </div>
-                    <p className="text-[10px] font-black text-primary">{Math.round((state.xp / xpToNext) * 100)}%</p>
+                    <p className="text-[10px] font-black text-primary">{Math.round((currentXpValue / xpToNext) * 100)}%</p>
                   </div>
-                  <Progress value={(state.xp / xpToNext) * 100} className="h-2 bg-black/5" />
+                  <Progress value={(currentXpValue / xpToNext) * 100} className="h-2 bg-black/5" />
                   <p className="text-[10px] text-muted-foreground italic">
                     "Consistent output is the only metric that matters in the long game."
                   </p>
@@ -437,139 +433,225 @@ export default function ProfilePage() {
       </div>
 
       {/* Edit Profile Setup Modal */}
-      {isEditing && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-card w-full max-w-md rounded-3xl border border-black/[0.08] p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto"
-          >
-            <div className="flex justify-between items-center pb-2 border-b border-black/[0.05]">
-              <h3 className="text-xl font-headline font-black">Edit Profile Setup</h3>
-              <button onClick={() => setIsEditing(false)} className="text-muted-foreground hover:text-foreground font-black text-sm p-1 cursor-pointer">✕</button>
-            </div>
+      <AnimatePresence>
+        {isEditing && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-card w-full max-w-md rounded-3xl border border-black/[0.08] p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto"
+            >
+              <div className="flex justify-between items-center pb-2 border-b border-black/[0.05]">
+                <h3 className="text-xl font-headline font-black">Edit Profile Setup</h3>
+                <button onClick={() => setIsEditing(false)} className="text-muted-foreground hover:text-foreground font-black text-sm p-1 cursor-pointer">✕</button>
+              </div>
 
-            <div className="space-y-5">
-              {/* Profile Photo selector */}
-              <div className="flex flex-col items-center space-y-4">
-                <div className="relative group w-24 h-24 rounded-3xl border-2 border-primary/20 overflow-hidden bg-accent/5 flex items-center justify-center font-black text-3xl shadow-md">
-                  {tempPfp ? (
-                    <img src={tempPfp} alt="Preview" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-primary">{tempName ? tempName[0].toUpperCase() : '?'}</span>
-                  )}
-                </div>
-                
-                <div className="flex gap-2">
-                  <label className="cursor-pointer bg-primary text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-primary/95 transition-all shadow-md shadow-primary/10">
-                    <span>Upload Image</span>
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      className="hidden" 
-                      onChange={handleFileChange} 
-                    />
-                  </label>
-                  {tempPfp && (
-                    <button 
-                      onClick={() => setTempPfp('')}
-                      className="bg-red-500/10 text-red-500 text-xs font-bold px-4 py-2 rounded-xl border border-red-500/20 hover:bg-red-500/20 transition-all cursor-pointer"
-                    >
-                      Remove
-                    </button>
-                  )}
-                </div>
-
-                {/* Quick Emoji selection */}
-                <div className="space-y-2 text-center w-full pt-1">
-                  <p className="text-[10px] text-muted-foreground uppercase font-black tracking-wider">Or Use Quick Emoji Avatar</p>
-                  <div className="flex justify-center gap-2">
-                    {['🚀', '💡', '🧠', '🏆', '🔥'].map(emoji => (
+              <div className="space-y-5">
+                {/* Profile Photo selector */}
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="relative group w-24 h-24 rounded-3xl border-2 border-primary/20 overflow-hidden bg-accent/5 flex items-center justify-center font-black text-3xl shadow-md">
+                    {tempPfp ? (
+                      <img src={tempPfp} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-primary">{tempName ? tempName[0].toUpperCase() : '?'}</span>
+                    )}
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <label className="cursor-pointer bg-primary text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-primary/95 transition-all shadow-md shadow-primary/10">
+                      <span>Upload Image</span>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        className="hidden" 
+                        onChange={handleFileChange} 
+                      />
+                    </label>
+                    {tempPfp && (
                       <button 
-                        key={emoji}
-                        onClick={() => handleSelectEmojiPfp(emoji)}
-                        className="w-10 h-10 rounded-xl border border-black/[0.06] bg-card hover:bg-muted text-lg flex items-center justify-center transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
-                        type="button"
+                        onClick={() => setTempPfp('')}
+                        className="bg-red-500/10 text-red-500 text-xs font-bold px-4 py-2 rounded-xl border border-red-500/20 hover:bg-red-500/20 transition-all cursor-pointer"
                       >
-                        {emoji}
+                        Remove
                       </button>
-                    ))}
+                    )}
+                  </div>
+
+                  {/* Quick Emoji selection */}
+                  <div className="space-y-2 text-center w-full pt-1">
+                    <p className="text-[10px] text-muted-foreground uppercase font-black tracking-wider">Or Use Quick Emoji Avatar</p>
+                    <div className="flex justify-center gap-2">
+                      {['🚀', '💡', '🧠', '🏆', '🔥'].map(emoji => (
+                        <button 
+                          key={emoji}
+                          onClick={() => handleSelectEmojiPfp(emoji)}
+                          className="w-10 h-10 rounded-xl border border-black/[0.06] bg-card hover:bg-muted text-lg flex items-center justify-center transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
+                          type="button"
+                        >
+                          {emoji}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Full Name */}
-              <div className="space-y-1.5">
-                <label className="text-xs uppercase font-bold tracking-wider text-muted-foreground">Full Name</label>
-                <input 
-                  type="text" 
-                  value={tempName}
-                  onChange={(e) => setTempName(e.target.value)}
-                  className="w-full p-3.5 rounded-xl border border-black/[0.08] bg-background text-foreground text-sm outline-none focus:border-primary transition-colors font-sans"
-                  placeholder="e.g. Alex Smith"
-                  required
-                />
-              </div>
-
-              {/* Nation Selector */}
-              <div className="space-y-1.5">
-                <label className="text-xs uppercase font-bold tracking-wider text-muted-foreground">Nation / Country</label>
-                <select
-                  value={tempNation}
-                  onChange={(e) => setTempNation(e.target.value)}
-                  className="w-full p-3.5 rounded-xl border border-black/[0.08] bg-background text-foreground text-sm outline-none focus:border-primary transition-colors font-sans"
-                  required
-                >
-                  <option value="United States">🇺🇸 United States</option>
-                  <option value="United Kingdom">🇬🇧 United Kingdom</option>
-                  <option value="Canada">🇨🇦 Canada</option>
-                  <option value="India">🇮🇳 India</option>
-                  <option value="Germany">🇩🇪 Germany</option>
-                  <option value="Australia">🇦🇺 Australia</option>
-                  <option value="Singapore">🇸🇬 Singapore</option>
-                  <option value="France">🇫🇷 France</option>
-                  <option value="Japan">🇯🇵 Japan</option>
-                  <option value="Brazil">🇧🇷 Brazil</option>
-                  <option value="Pakistan">🇵🇰 Pakistan</option>
-                  <option value="United Arab Emirates">🇦🇪 United Arab Emirates</option>
-                  <option value="Other">Other / International</option>
-                </select>
-              </div>
-
-              {tempNation === 'Other' && (
+                {/* Full Name */}
                 <div className="space-y-1.5">
-                  <label className="text-xs uppercase font-bold tracking-wider text-muted-foreground">Type Country Name</label>
+                  <label className="text-xs uppercase font-bold tracking-wider text-muted-foreground">Full Name</label>
                   <input 
                     type="text" 
-                    value={tempOtherNation}
-                    onChange={(e) => setTempOtherNation(e.target.value)}
+                    value={tempName}
+                    onChange={(e) => setTempName(e.target.value)}
                     className="w-full p-3.5 rounded-xl border border-black/[0.08] bg-background text-foreground text-sm outline-none focus:border-primary transition-colors font-sans"
-                    placeholder="e.g. New Zealand"
+                    placeholder="e.g. Alex Smith"
                     required
                   />
                 </div>
-              )}
 
-              {error && <p className="text-xs text-red-500 font-bold text-center">{error}</p>}
-            </div>
+                {/* Nation Selector */}
+                <div className="space-y-1.5">
+                  <label className="text-xs uppercase font-bold tracking-wider text-muted-foreground">Nation / Country</label>
+                  <select
+                    value={tempNation}
+                    onChange={(e) => setTempNation(e.target.value)}
+                    className="w-full p-3.5 rounded-xl border border-black/[0.08] bg-background text-foreground text-sm outline-none focus:border-primary transition-colors font-sans"
+                    required
+                  >
+                    <option value="United States">🇺🇸 United States</option>
+                    <option value="United Kingdom">🇬🇧 United Kingdom</option>
+                    <option value="Canada">🇨🇦 Canada</option>
+                    <option value="India">🇮🇳 India</option>
+                    <option value="Germany">🇩🇪 Germany</option>
+                    <option value="Australia">🇦🇺 Australia</option>
+                    <option value="Singapore">🇸🇬 Singapore</option>
+                    <option value="France">🇫🇷 France</option>
+                    <option value="Japan">🇯🇵 Japan</option>
+                    <option value="Brazil">🇧🇷 Brazil</option>
+                    <option value="Pakistan">🇵🇰 Pakistan</option>
+                    <option value="United Arab Emirates">🇦🇪 United Arab Emirates</option>
+                    <option value="Other">Other / International</option>
+                  </select>
+                </div>
 
-            <div className="flex gap-3 pt-4 border-t border-black/[0.05]">
+                {tempNation === 'Other' && (
+                  <div className="space-y-1.5">
+                    <label className="text-xs uppercase font-bold tracking-wider text-muted-foreground">Type Country Name</label>
+                    <input 
+                      type="text" 
+                      value={tempOtherNation}
+                      onChange={(e) => setTempOtherNation(e.target.value)}
+                      className="w-full p-3.5 rounded-xl border border-black/[0.08] bg-background text-foreground text-sm outline-none focus:border-primary transition-colors font-sans"
+                      placeholder="e.g. New Zealand"
+                      required
+                    />
+                  </div>
+                )}
+
+                {error && <p className="text-xs text-red-500 font-bold text-center">{error}</p>}
+              </div>
+
+              <div className="flex gap-3 pt-4 border-t border-black/[0.05]">
+                <button 
+                  onClick={() => setIsEditing(false)}
+                  className="flex-1 p-3 rounded-xl border border-black/[0.08] bg-card text-foreground font-bold hover:bg-muted text-sm transition-all cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleSaveProfile}
+                  className="flex-1 p-3 rounded-xl bg-primary text-white font-bold hover:bg-primary/95 text-sm transition-all shadow-md shadow-primary/10 cursor-pointer"
+                >
+                  Save Setup
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Share Journey Multi-Channel Modal */}
+      <AnimatePresence>
+        {isSharing && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-card w-full max-w-md rounded-3xl border border-black/[0.08] p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto"
+            >
+              <div className="flex justify-between items-center pb-2 border-b border-black/[0.05]">
+                <h3 className="text-xl font-headline font-black">Share Your Journey</h3>
+                <button onClick={() => setIsSharing(false)} className="text-muted-foreground hover:text-foreground font-black text-sm p-1 cursor-pointer">✕</button>
+              </div>
+
+              <div className="space-y-4">
+                <p className="text-xs text-muted-foreground font-medium">
+                  Tell other builders about your learning milestones on RiseForge!
+                </p>
+
+                {/* Message preview */}
+                <div className="p-4 rounded-2xl bg-black/[0.02] border border-black/[0.04] text-[11px] font-mono select-all break-words leading-relaxed text-muted-foreground/80">
+                  {shareMessage}
+                </div>
+
+                {/* Quick share channels */}
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  {/* WhatsApp */}
+                  <a 
+                    href={`https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 p-3.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs transition-all shadow-md shadow-emerald-500/10 cursor-pointer"
+                  >
+                    <span>WhatsApp</span>
+                  </a>
+                  
+                  {/* Twitter / X */}
+                  <a 
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 p-3.5 rounded-xl bg-black hover:bg-black/90 text-white font-bold text-xs transition-all shadow-md shadow-black/10 cursor-pointer"
+                  >
+                    <span>X / Twitter</span>
+                  </a>
+
+                  {/* Gmail */}
+                  <a 
+                    href={`mailto:?subject=My%20RiseForge%20Startup%20Journey!&body=${encodeURIComponent(shareMessage)}`}
+                    className="flex items-center justify-center gap-2 p-3.5 rounded-xl bg-[#EA4335] hover:bg-[#d9372a] text-white font-bold text-xs transition-all shadow-md shadow-red-500/10 cursor-pointer"
+                  >
+                    <span>Gmail</span>
+                  </a>
+
+                  {/* Copy Link */}
+                  <button 
+                    onClick={() => {
+                      navigator.clipboard.writeText(shareMessage)
+                      alert("Journey status copied to clipboard! Share it on Instagram or anywhere else 🚀")
+                    }}
+                    className="flex items-center justify-center gap-2 p-3.5 rounded-xl bg-primary hover:bg-primary/95 text-white font-bold text-xs transition-all shadow-md shadow-primary/10 cursor-pointer"
+                  >
+                    <span>Copy Status</span>
+                  </button>
+                </div>
+                
+                <p className="text-[10px] text-muted-foreground/70 italic text-center pt-1">
+                  Note: Instagram doesn't support web links sharing. Use "Copy Status" to paste it into your bio or stories!
+                </p>
+              </div>
+
               <button 
-                onClick={() => setIsEditing(false)}
-                className="flex-1 p-3 rounded-xl border border-black/[0.08] bg-card text-foreground font-bold hover:bg-muted text-sm transition-all cursor-pointer"
+                onClick={() => setIsSharing(false)}
+                className="w-full p-3 rounded-xl border border-black/[0.08] bg-card text-foreground font-bold hover:bg-muted text-sm transition-all cursor-pointer text-center"
               >
-                Cancel
+                Done
               </button>
-              <button 
-                onClick={handleSaveProfile}
-                className="flex-1 p-3 rounded-xl bg-primary text-white font-bold hover:bg-primary/95 text-sm transition-all shadow-md shadow-primary/10 cursor-pointer"
-              >
-                Save Setup
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </GameShell>
   )
 }

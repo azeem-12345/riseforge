@@ -130,7 +130,20 @@ const DEFAULT_STATE: GameState = {
   showLevelUp: false
 }
 
-export const getXPForLevel = (level: number) => 50 + (level - 1) * 25
+export const getXPForLevel = (level: number) => 50 * Math.pow(2, level - 1)
+
+const LESSON_SKILL_MAP: Record<string, keyof CognitiveSkills> = {
+  'week-1': 'strategicThinking',
+  'week-2': 'riskAnalysis',
+  'week-3': 'marketAwareness',
+  'week-4': 'strategicThinking',
+  'week-5': 'leadership',
+  'week-6': 'marketAwareness',
+  'week-7': 'financialIntelligence',
+  'week-8': 'negotiation',
+  'week-9': 'financialIntelligence',
+  'week-10': 'leadership',
+}
 
 const STAGES: FounderStage[] = ['Dreamer', 'Builder', 'Operator', 'Strategist', 'Visionary', 'Empire Architect']
 
@@ -320,21 +333,25 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
         ? [...prev.unlockedModules, unlockKey] 
         : prev.unlockedModules;
       
-      if (prev.completedLessons.includes(lessonId)) {
-        return {
-          ...prev,
-          unlockedModules: newUnlocked
-        }
-      }
+      const completed = prev.completedLessons.includes(lessonId)
+        ? prev.completedLessons
+        : [...prev.completedLessons, lessonId];
       
+      const skillToUpgrade = LESSON_SKILL_MAP[lessonId] || 'strategicThinking';
+      const currentSkillVal = prev.skills && prev.skills[skillToUpgrade] !== undefined ? prev.skills[skillToUpgrade] : 10;
+      const updatedSkills = {
+        ...(prev.skills || DEFAULT_SKILLS),
+        [skillToUpgrade]: Math.min(100, currentSkillVal + 15)
+      };
+
       return {
         ...prev,
-        completedLessons: [...prev.completedLessons, lessonId],
-        unlockedModules: newUnlocked
+        completedLessons: completed,
+        unlockedModules: newUnlocked,
+        skills: updatedSkills
       }
     })
     addXP(xpReward)
-    updateSkills({ strategicThinking: state.skills.strategicThinking + 2 })
     addReputation(5)
   }
 

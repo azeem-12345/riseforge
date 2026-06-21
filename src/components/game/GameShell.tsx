@@ -30,7 +30,6 @@ import { useUser } from '@/firebase'
 const navItems = [
   { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard', key: 'dashboard' },
   { name: 'How to Start a Startup', icon: MapIcon, href: '/world-map', key: 'world-map' },
-  { name: 'Weekly Challenges', icon: Sword, href: '/challenge-arena', key: 'challenge-arena' },
   { name: 'Founder Mentor', icon: Brain, href: '/mentor', key: 'mentor' },
   { name: 'Leaderboard', icon: Trophy, href: '/leaderboard', key: 'leaderboard' },
 ]
