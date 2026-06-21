@@ -71,6 +71,7 @@ export interface Badge {
 
 export interface GameState {
   name: string
+  nation: string
   xp: number
   level: number
   levelTitle: UserLevel
@@ -104,6 +105,7 @@ const DEFAULT_SKILLS: CognitiveSkills = {
 
 const DEFAULT_STATE: GameState = {
   name: 'Future Founder',
+  nation: 'Global',
   xp: 0,
   level: 1,
   levelTitle: 'Explorer',
