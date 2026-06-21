@@ -109,7 +109,7 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
   }
 
   const handleFinish = () => {
-    completeLesson(id, lesson.xpReward, lesson.simulationIntegration.unlockKey)
+    completeLesson(id, 50, lesson.simulationIntegration.unlockKey)
     setIsFinished(true)
   }
 

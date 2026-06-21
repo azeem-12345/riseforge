@@ -354,7 +354,7 @@ export default function LandingPage() {
             <div className="pt-8 border-t border-black/[0.05] mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Estimated reward:</span>
-                <span className="text-sm font-black text-green-600 font-sans">+150 XP</span>
+                <span className="text-sm font-black text-green-600 font-sans">+50 XP</span>
               </div>
               <button 
                 onClick={() => router.push('/auth')}

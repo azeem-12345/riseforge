@@ -119,8 +119,12 @@ export default function GameShell({ children }: { children: React.ReactNode }) {
               pathname === '/profile' ? "bg-accent/10 border-accent/30" : "bg-black/[0.02] border-border hover:bg-black/[0.05]"
             )}
           >
-            <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent-foreground font-semibold text-sm shadow-sm overflow-hidden border border-accent/30">
-              <img src={`https://picsum.photos/seed/${state.name}/100/100`} alt="Avatar" className="w-full h-full object-cover" />
+            <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent-foreground font-semibold text-sm shadow-sm overflow-hidden border border-accent/30 shrink-0">
+              {state.pfp ? (
+                <img src={state.pfp} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <img src={`https://picsum.photos/seed/${state.name}/100/100`} alt="Avatar" className="w-full h-full object-cover" />
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-medium truncate group-hover:text-primary transition-colors">{state.name}</p>

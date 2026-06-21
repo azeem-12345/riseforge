@@ -72,6 +72,7 @@ export interface Badge {
 export interface GameState {
   name: string
   nation: string
+  pfp?: string
   xp: number
   level: number
   levelTitle: UserLevel
@@ -106,6 +107,7 @@ const DEFAULT_SKILLS: CognitiveSkills = {
 const DEFAULT_STATE: GameState = {
   name: 'Future Founder',
   nation: 'Global',
+  pfp: '',
   xp: 0,
   level: 1,
   levelTitle: 'Explorer',
@@ -128,7 +130,7 @@ const DEFAULT_STATE: GameState = {
   showLevelUp: false
 }
 
-export const getXPForLevel = (level: number) => Math.floor(100 * Math.pow(level, 1.8))
+export const getXPForLevel = (level: number) => 50 + (level - 1) * 25
 
 const STAGES: FounderStage[] = ['Dreamer', 'Builder', 'Operator', 'Strategist', 'Visionary', 'Empire Architect']
 
