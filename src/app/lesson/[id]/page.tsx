@@ -28,8 +28,8 @@ import { ACADEMY_CONTENT } from '@/lib/academy-data'
 import { PlaceHolderImages } from '@/lib/placeholder-images'
 import { useUser } from '@/firebase'
 
-type Step = 'theory' | 'summary'
-const STEPS: Step[] = ['theory', 'summary']
+type Step = 'intro' | 'theory' | 'examples' | 'mistakes' | 'vocabulary' | 'summary'
+const STEPS: Step[] = ['intro', 'theory', 'examples', 'mistakes', 'vocabulary', 'summary']
 
 const slideVariants = {
   enter: (direction: number) => ({
@@ -61,7 +61,6 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [direction, setDirection] = useState(0)
   const [isFinished, setIsFinished] = useState(false)
-  const [simFeedback, setSimFeedback] = useState<string | null>(null)
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -109,7 +108,7 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
   }
 
   const handleFinish = () => {
-    completeLesson(id, 50, lesson.simulationIntegration.unlockKey)
+    completeLesson(id, 50)
     setIsFinished(true)
   }
 
@@ -161,7 +160,47 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                 }}
                 className="w-full flex justify-center"
               >
-                {/* Step 1: Theory (PDF / Paper Style) */}
+                {/* Step 1: Introduction & Objective */}
+                {currentStep === 'intro' && (
+                  <div className="w-full max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-1000">
+                    <Card className="glass-card shadow-2xl rounded-2xl overflow-hidden border-border relative">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary opacity-80" />
+                      <CardContent className="p-8 md:p-12 space-y-6">
+                        <div className="space-y-4 text-center">
+                          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-black uppercase tracking-widest">
+                            <Sparkles className="w-3.5 h-3.5 animate-spin" /> Week {lesson.week} Briefing
+                          </div>
+                          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-foreground/95 leading-tight font-sans">
+                            {lesson.title}
+                          </h2>
+                          <p className="text-sm font-sans font-medium text-muted-foreground/80 leading-relaxed max-w-2xl mx-auto">
+                            Welcome to Week {lesson.week} of the RiseForge Founder Academy curriculum. Let's look at the learning plan for this module.
+                          </p>
+                        </div>
+
+                        <div className="p-6 bg-secondary/50 rounded-2xl border border-border space-y-4 max-w-2xl mx-auto">
+                          <h3 className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-2">
+                            <BookOpen className="w-4 h-4" /> Weekly Learning Objective
+                          </h3>
+                          <p className="text-sm font-medium leading-relaxed text-foreground/90 font-sans">
+                            {lesson.objective}
+                          </p>
+                        </div>
+
+                        <div className="flex justify-center pt-6">
+                          <Button 
+                            onClick={handleNext}
+                            className="rounded-xl h-11 px-8 font-black uppercase text-[10px] tracking-widest shadow-lg shadow-primary/25 bg-primary hover:bg-primary/95 text-white"
+                          >
+                            Begin Module <ChevronRight className="w-4 h-4 ml-2" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+
+                {/* Step 2: Concept Theory */}
                 {currentStep === 'theory' && (
                   <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-2 duration-1000">
                     <Card className="glass-card shadow-2xl rounded-2xl overflow-hidden flex flex-col relative mx-auto border-border">
@@ -171,10 +210,9 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                       <CardContent className="p-6 md:p-12 space-y-4 flex-1">
                         <div className="space-y-3 border-b border-border pb-8">
                           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80 mb-1 flex items-center gap-2">
-                            <Sparkles className="w-3 h-3" /> Executive Briefing • Week {lesson.week}
+                            <Sparkles className="w-3 h-3" /> Core Concept • Week {lesson.week}
                           </p>
                           <h2 className="text-2xl md:text-4xl font-semibold tracking-tight text-foreground/90 leading-tight">{lesson.title}</h2>
-                          <p className="text-sm font-medium text-muted-foreground/80 leading-relaxed max-w-3xl">{lesson.objective}</p>
                         </div>
 
                         <div className="space-y-6 pt-4">
@@ -279,34 +317,6 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                              })}
                            </div>
                         </div>
-
-                        <div className="grid md:grid-cols-2 gap-8 pt-10 border-t border-border mt-8">
-                          <div className="space-y-4">
-                             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/80 flex items-center gap-2">
-                               <Lightbulb className="w-3.5 h-3.5 text-primary" /> Case Examples
-                             </h3>
-                             <ul className="space-y-4">
-                               {lesson.examples.map((ex, i) => (
-                                 <li key={i} className="text-sm text-foreground/85 border-l-2 border-primary/30 pl-4 py-1 italic leading-relaxed bg-secondary/40 rounded-r-lg">
-                                   {ex}
-                                 </li>
-                               ))}
-                             </ul>
-                          </div>
-                          <div className="space-y-4">
-                             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/80 flex items-center gap-2">
-                               <Zap className="w-3.5 h-3.5 text-primary" /> Core Terminology
-                             </h3>
-                             <div className="space-y-4">
-                               {lesson.vocabulary.map((v, i) => (
-                                 <div key={i} className="text-sm bg-secondary/30 p-3 rounded-xl border border-border">
-                                   <span className="font-semibold text-primary/95 block mb-1">{v.word}</span>
-                                   <span className="text-muted-foreground/90 leading-relaxed block">{v.definition}</span>
-                                 </div>
-                               ))}
-                           </div>
-                          </div>
-                        </div>
                       </CardContent>
                       
                       {/* Footer Decoration */}
@@ -318,99 +328,149 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                   </div>
                 )}
 
-                {currentStep === 'scenario' && (
-                  <div className="space-y-4 w-full max-w-3xl">
-                    <div className="p-6 rounded-[1.5rem] glass-card border-accent/20 bg-accent/[0.02] relative overflow-hidden">
-                      <div className="absolute top-0 right-0 p-6 opacity-5"><BarChart3 className="w-24 h-24" /></div>
-                      <div className="flex items-center gap-3 mb-6">
-                         <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center text-accent shadow-inner"><PlayCircle className="w-5 h-5" /></div>
-                         <div>
-                            <p className="text-[9px] font-black text-accent uppercase tracking-[0.2em]">Strategic Simulation</p>
-                            <h3 className="text-base font-black tracking-tight">{lesson.scenario.title}</h3>
-                         </div>
-                      </div>
-                      <div className="p-4 bg-black/40 rounded-xl border border-white/5 mb-6">
-                         <p className="text-[12px] leading-relaxed font-medium italic text-foreground/90">"{lesson.scenario.description}"</p>
-                      </div>
-                      <div className="grid gap-2">
-                        {lesson.scenario.options.map((option) => (
-                          <button
-                            key={option.id}
-                            onClick={() => setSimFeedback(option.feedback)}
-                            className={cn(
-                              "w-full text-left p-4 rounded-xl border transition-all flex justify-between items-center group",
-                              simFeedback === option.feedback ? "border-accent bg-accent/10" : simFeedback ? "opacity-30 border-white/5" : "hover:border-accent/40 hover:bg-white/5 border-white/5"
-                            )}
-                          >
-                            <span className="font-bold text-[12px]">{option.label}</span>
-                            <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-accent group-hover:translate-x-1 transition-all" />
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    {simFeedback && (
-                      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="p-6 rounded-[1.5rem] glass-card border-primary/20 bg-primary/[0.03] space-y-2">
-                        <div className="flex items-center gap-2 text-primary"><Sparkles className="w-3 h-3" /> <h4 className="font-black uppercase tracking-[0.3em] text-[9px]">Strategic Feedback</h4></div>
-                        <p className="text-[12px] font-medium leading-relaxed text-foreground/90 italic">"{simFeedback}"</p>
-                      </motion.div>
-                    )}
-                  </div>
-                )}
+                {/* Step 3: Case Studies */}
+                {currentStep === 'examples' && (
+                  <div className="w-full max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-1000">
+                    <Card className="glass-card shadow-2xl rounded-2xl overflow-hidden border-border relative">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-400 opacity-80" />
+                      <CardContent className="p-8 md:p-12 space-y-6">
+                        <div className="space-y-3 text-center border-b border-border pb-6">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-emerald-600 flex items-center gap-2 justify-center">
+                            <Lightbulb className="w-3.5 h-3.5" /> Real-World Examples
+                          </p>
+                          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground/95 leading-tight">
+                            Startup Case Studies
+                          </h2>
+                          <p className="text-xs text-muted-foreground/80">
+                            See how famous startup founders applied these principles in their early days:
+                          </p>
+                        </div>
 
-                {/* Step 3: Integration */}
-                {currentStep === 'integration' && (
-                  <div className="space-y-4 w-full max-w-3xl">
-                    <Card className="glass-card border-violet-500/20 bg-violet-500/[0.02] p-6 space-y-4">
-                       <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-500 shadow-xl"><Zap className="w-5 h-5" /></div>
-                          <div>
-                             <p className="text-[9px] font-black text-violet-500 uppercase tracking-[0.3em]">System Upgrade</p>
-                             <h3 className="text-lg font-black tracking-tighter">Founder OS Integration</h3>
-                          </div>
-                       </div>
-                       <div className="grid md:grid-cols-3 gap-3">
-                          <div className="p-4 rounded-xl bg-white/5 border border-white/5 space-y-1">
-                             <h4 className="text-[8px] font-black uppercase text-muted-foreground">Module Unlock</h4>
-                             <p className="text-[11px] font-bold text-violet-500">{lesson.simulationIntegration.featureUnlock}</p>
-                          </div>
-                          <div className="p-4 rounded-xl bg-white/5 border border-white/5 space-y-1">
-                             <h4 className="text-[8px] font-black uppercase text-muted-foreground">Strategic Action</h4>
-                             <p className="text-[11px] font-bold text-foreground">{lesson.simulationIntegration.decision}</p>
-                          </div>
-                          <div className="p-4 rounded-xl bg-white/5 border border-white/5 space-y-1">
-                             <h4 className="text-[8px] font-black uppercase text-muted-foreground">Strategic Logic</h4>
-                             <p className="text-[10px] text-muted-foreground italic leading-relaxed">{lesson.simulationIntegration.logic}</p>
-                          </div>
-                       </div>
-                       <div className="p-4 bg-violet-500/10 rounded-xl border border-violet-500/20 flex gap-2 items-center">
-                          <Info className="w-4 h-4 text-violet-500 shrink-0" />
-                          <p className="text-[10px] text-violet-500 font-medium leading-relaxed">Completing this lesson will unlock the {lesson.simulationIntegration.featureUnlock} module in your Founder OS dashboard.</p>
-                       </div>
+                        <div className="space-y-4 pt-2">
+                          {lesson.examples.map((ex, i) => (
+                            <div key={i} className="flex gap-4 p-5 rounded-2xl bg-emerald-500/[0.03] border border-emerald-500/10 hover:border-emerald-500/30 transition-all shadow-sm">
+                              <div className="p-2.5 h-10 w-10 shrink-0 bg-emerald-500/10 text-emerald-600 rounded-xl flex items-center justify-center">
+                                <Sparkles className="w-5 h-5" />
+                              </div>
+                              <div className="space-y-1 pt-0.5">
+                                <h4 className="text-sm font-bold text-foreground">Case Study #{i + 1}</h4>
+                                <p className="text-sm font-medium leading-relaxed text-muted-foreground/90 font-sans italic">
+                                  "{ex}"
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
                     </Card>
                   </div>
                 )}
 
-                {/* Step 4: Summary */}
+                {/* Step 4: Pitfalls & Mistakes */}
+                {currentStep === 'mistakes' && (
+                  <div className="w-full max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-1000">
+                    <Card className="glass-card shadow-2xl rounded-2xl overflow-hidden border-border relative">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-amber-500 opacity-80" />
+                      <CardContent className="p-8 md:p-12 space-y-6">
+                        <div className="space-y-3 text-center border-b border-border pb-6">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-red-500 flex items-center gap-2 justify-center">
+                            <Info className="w-3.5 h-3.5" /> Common Pitfalls
+                          </p>
+                          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground/95 leading-tight">
+                            Founder Mistakes to Avoid
+                          </h2>
+                          <p className="text-xs text-muted-foreground/80">
+                            Learn what goes wrong so you can make smart startup choices:
+                          </p>
+                        </div>
+
+                        <div className="space-y-4 pt-2">
+                          {lesson.mistakes.map((mistake, i) => (
+                            <div key={i} className="flex gap-4 p-5 rounded-2xl bg-red-500/[0.03] border border-red-500/10 hover:border-red-500/30 transition-all shadow-sm">
+                              <div className="p-2.5 h-10 w-10 shrink-0 bg-red-500/10 text-red-500 rounded-xl flex items-center justify-center">
+                                <Zap className="w-5 h-5" />
+                              </div>
+                              <div className="space-y-1 pt-0.5">
+                                <h4 className="text-sm font-bold text-foreground">Mistake #{i + 1}</h4>
+                                <p className="text-sm font-sans font-medium leading-relaxed text-muted-foreground/90">
+                                  {mistake}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+
+                {/* Step 5: Key Vocabulary */}
+                {currentStep === 'vocabulary' && (
+                  <div className="w-full max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-1000">
+                    <Card className="glass-card shadow-2xl rounded-2xl overflow-hidden border-border relative">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-indigo-500 opacity-80" />
+                      <CardContent className="p-8 md:p-12 space-y-6">
+                        <div className="space-y-3 text-center border-b border-border pb-6">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-purple-600 flex items-center gap-2 justify-center">
+                            <BookOpen className="w-3.5 h-3.5" /> Founder Dictionary
+                          </p>
+                          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground/95 leading-tight">
+                            Core Terminology
+                          </h2>
+                          <p className="text-xs text-muted-foreground/80">
+                            Make sure you understand these basic startup words:
+                          </p>
+                        </div>
+
+                        <div className="grid gap-4 sm:grid-cols-1 pt-2">
+                          {lesson.vocabulary.map((v, i) => (
+                            <div key={i} className="p-5 rounded-2xl bg-purple-500/[0.03] border border-purple-500/10 hover:border-purple-500/30 transition-all shadow-sm space-y-2">
+                              <span className="font-bold text-purple-600 text-sm block tracking-wide">{v.word}</span>
+                              <p className="text-sm font-sans font-medium text-muted-foreground/90 leading-relaxed">
+                                {v.definition}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+
+                {/* Step 6: Summary & Complete */}
                 {currentStep === 'summary' && (
-                  <div className="space-y-4 text-center py-4 w-full max-w-3xl">
-                    <div className="relative inline-block mb-4">
-                       <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.3, 0.1] }} transition={{ duration: 4, repeat: Infinity }} className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
-                       <Trophy className="w-20 h-20 text-primary relative z-10 mx-auto drop-shadow-[0_0_20px_rgba(var(--primary),0.4)]" />
-                    </div>
-                    <div className="space-y-2 max-w-xl mx-auto">
-                      <h2 className="text-2xl font-headline font-black tracking-tight">Module Mastery</h2>
-                      <p className="text-[12px] text-muted-foreground leading-relaxed font-medium">{lesson.summary}</p>
-                    </div>
-                    <div className="grid md:grid-cols-2 gap-3 max-w-md mx-auto pt-6">
-                      <div className="p-4 rounded-xl glass-card border-white/5 space-y-1 text-center">
-                         <p className="text-[8px] font-black uppercase text-primary tracking-widest">XP Awarded</p>
-                         <p className="text-xl font-black">+{lesson.xpReward}</p>
-                      </div>
-                      <div className="p-4 rounded-xl glass-card border-white/5 space-y-1 text-center">
-                         <p className="text-[8px] font-black uppercase text-accent tracking-widest">Growth Status</p>
-                         <p className="text-xl font-black">STABLE</p>
-                      </div>
-                    </div>
+                  <div className="w-full max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-1000">
+                    <Card className="glass-card shadow-2xl rounded-2xl overflow-hidden border-border relative text-center">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary opacity-80" />
+                      <CardContent className="p-8 md:p-12 space-y-6">
+                        <div className="relative inline-block mb-2">
+                          <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.3, 0.1] }} transition={{ duration: 4, repeat: Infinity }} className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
+                          <Trophy className="w-20 h-20 text-primary relative z-10 mx-auto drop-shadow-[0_0_20px_rgba(var(--primary),0.4)]" />
+                        </div>
+                        <div className="space-y-2 max-w-xl mx-auto">
+                          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground leading-tight">Module Mastery</h2>
+                          <p className="text-sm text-muted-foreground leading-relaxed font-sans font-medium">{lesson.summary}</p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 max-w-md mx-auto pt-4">
+                          <div className="p-4 rounded-xl bg-secondary/50 border border-border space-y-1 text-center">
+                            <p className="text-[10px] font-black uppercase text-primary tracking-widest">XP Awarded</p>
+                            <p className="text-xl font-bold">+{lesson.xpReward}</p>
+                          </div>
+                          <div className="p-4 rounded-xl bg-secondary/50 border border-border space-y-1 text-center">
+                            <p className="text-[10px] font-black uppercase text-accent tracking-widest">Growth Status</p>
+                            <p className="text-xl font-bold">STABLE</p>
+                          </div>
+                        </div>
+                        <div className="pt-6">
+                          <Button 
+                            onClick={handleFinish}
+                            className="rounded-xl h-11 px-8 font-black uppercase text-[10px] tracking-widest shadow-lg shadow-primary/25 bg-primary hover:bg-primary/95 text-white cursor-pointer"
+                          >
+                            Finalize Module
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
                   </div>
                 )}
               </motion.div>
@@ -418,8 +478,8 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                <div className="h-80 flex flex-col items-center justify-center space-y-4 animate-in fade-in zoom-in duration-500 text-center">
                   <CheckCircle2 className="w-16 h-16 text-green-500" />
                   <h2 className="text-xl font-black uppercase tracking-tighter">Module Complete</h2>
-                  <p className="text-[12px] text-muted-foreground max-w-xs">You have successfully mastered this strategic unit and earned your rewards.</p>
-                  <Button onClick={() => router.push('/world-map')} className="rounded-xl h-10 px-8 font-black bg-primary text-[9px] uppercase tracking-widest">Return to Path</Button>
+                  <p className="text-[12px] text-muted-foreground max-w-xs leading-relaxed font-sans font-medium">You have successfully mastered this strategic unit and earned your rewards.</p>
+                  <Button onClick={() => router.push('/world-map')} className="rounded-xl h-10 px-8 font-black bg-primary text-[9px] uppercase tracking-widest cursor-pointer">Return to Path</Button>
                </div>
             )}
           </AnimatePresence>
@@ -433,18 +493,18 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                 variant="outline" 
                 onClick={handleBack} 
                 disabled={currentStepIndex === 0}
-                className="h-9 px-4 rounded-lg border-white/10 text-[8px] font-black uppercase tracking-widest disabled:opacity-30"
+                className="h-9 px-4 rounded-lg border-white/10 text-[8px] font-black uppercase tracking-widest disabled:opacity-30 cursor-pointer"
               >
                 <ChevronLeft className="w-3.5 h-3.5 mr-1.5" /> Back
               </Button>
 
               <div className="flex-1 text-center hidden sm:block">
-                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Page {currentStepIndex + 1} of {STEPS.length}</p>
+                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest font-sans">Page {currentStepIndex + 1} of {STEPS.length}</p>
               </div>
 
               <Button 
                 onClick={handleNext} 
-                className="h-9 px-6 rounded-lg bg-primary text-white font-black uppercase text-[8px] tracking-widest shadow-xl shadow-primary/20"
+                className="h-9 px-6 rounded-lg bg-primary text-white font-black uppercase text-[8px] tracking-widest shadow-xl shadow-primary/20 cursor-pointer"
               >
                 {currentStepIndex === STEPS.length - 1 ? "FINALIZE MODULE" : "NEXT PAGE"} <ChevronRight className="ml-1.5 w-3.5 h-3.5" />
               </Button>
