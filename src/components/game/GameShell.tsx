@@ -27,13 +27,13 @@ import {
 } from "@/components/ui/sheet"
 
 const navItems = [
-  { name: 'Home Base', icon: LayoutDashboard, href: '/dashboard', key: 'dashboard' },
-  { name: 'Academy Path', icon: MapIcon, href: '/world-map', key: 'world-map' },
-  { name: 'Finding Problems', icon: Eye, href: '/opportunity-scanner', key: 'opportunity-scanner' },
-  { name: 'Weekly Missions', icon: Sword, href: '/challenge-arena', key: 'challenge-arena' },
+  { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard', key: 'dashboard' },
+  { name: 'How to Start a Startup', icon: MapIcon, href: '/world-map', key: 'world-map' },
+  { name: 'Find Problems', icon: Eye, href: '/opportunity-scanner', key: 'opportunity-scanner' },
+  { name: 'Weekly Challenges', icon: Sword, href: '/challenge-arena', key: 'challenge-arena' },
   { name: 'Idea Lab', icon: FlaskConical, href: '/idea-lab', key: 'idea-lab' },
   { name: 'Founder Mentor', icon: Brain, href: '/mentor', key: 'mentor' },
-  { name: 'World Rankings', icon: Trophy, href: '/leaderboard', key: 'leaderboard' },
+  { name: 'Leaderboard', icon: Trophy, href: '/leaderboard', key: 'leaderboard' },
 ]
 
 export default function GameShell({ children }: { children: React.ReactNode }) {
@@ -69,7 +69,7 @@ export default function GameShell({ children }: { children: React.ReactNode }) {
         </div>
 
         <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
-          <p className="text-[10px] font-medium uppercase text-muted-foreground/70 tracking-wider px-2 mb-3">Your System</p>
+          <p className="text-[10px] font-medium uppercase text-muted-foreground/70 tracking-wider px-2 mb-3">Menu</p>
           {navItems.map((item) => {
             const isActive = pathname === item.href
             const isUnlocked = isModuleUnlocked(item.key)
@@ -146,7 +146,7 @@ export default function GameShell({ children }: { children: React.ReactNode }) {
               
               <div className="flex flex-col h-full">
                 <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-                  <p className="text-[8px] font-black uppercase text-muted-foreground tracking-[0.3em] px-4 mb-4 opacity-50">Your System</p>
+                  <p className="text-[8px] font-black uppercase text-muted-foreground tracking-[0.3em] px-4 mb-4 opacity-50">Menu</p>
                   {navItems.map((item) => {
                     const isActive = pathname === item.href
                     const isUnlocked = isModuleUnlocked(item.key)

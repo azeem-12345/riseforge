@@ -2,20 +2,12 @@
 
 import GameShell from '@/components/game/GameShell'
 import { Card } from '@/components/ui/card'
-import { CheckCircle2, Lock, Star, ChevronRight, Play, Trophy, Sparkles, BookOpen, Clock, Activity } from 'lucide-react'
+import { CheckCircle2, Lock, ChevronRight, Play, Trophy, Sparkles, BookOpen, Clock, Activity, Rocket } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useGameState } from '@/hooks/use-game-state'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-
-const WORLDS = [
-  { id: 'foundation', name: 'Foundation', status: 'Active', weeks: 10 },
-  { id: 'idea', name: 'Idea to Company', status: 'Locked', weeks: 10 },
-  { id: 'growth', name: 'Launch & Growth', status: 'Locked', weeks: 12 },
-  { id: 'scaling', name: 'Scaling & Ops', status: 'Locked', weeks: 12 },
-  { id: 'elite', name: 'Elite Founder', status: 'Locked', weeks: 8 },
-]
 
 const ACADEMY_PATH = [
   { 
@@ -127,106 +119,7 @@ const ACADEMY_PATH = [
     xp: '+200 XP',
     overview: 'The final L1 exam: term sheets, dilution math, and board management.',
     skills: 'Finance, Negotiation'
-  },
-  { 
-    id: 'week-11', 
-    title: 'Early Startup Tactics', 
-    description: 'Week 11: Do things that don\'t scale.', 
-    type: 'core',
-    topic: 'Strategy',
-    duration: '12 mins',
-    xp: '+80 XP',
-    overview: 'Manual customer acquisition and hands-on onboarding strategies.',
-    skills: 'Strategy, Market'
-  },
-  { 
-    id: 'week-12', 
-    title: 'From Zero to Many Users', 
-    description: 'Week 12: Finding your first champions.', 
-    type: 'core',
-    topic: 'Market',
-    duration: '15 mins',
-    xp: '+80 XP',
-    overview: 'How to find early adopters and turn them into passionate advocates.',
-    skills: 'Market'
-  },
-  { 
-    id: 'week-13', 
-    title: 'Mastering Growth', 
-    description: 'Week 13: Retention & Virality.', 
-    type: 'core',
-    topic: 'Market',
-    duration: '14 mins',
-    xp: '+80 XP',
-    overview: 'Building virality engines and keeping retention curves flat.',
-    skills: 'Market, Finance'
-  },
-  { 
-    id: 'week-14', 
-    title: 'Advanced Growth', 
-    description: 'Week 14: Growth Hacking & Retention.', 
-    type: 'core',
-    topic: 'Market',
-    duration: '18 mins',
-    xp: '+100 XP',
-    overview: 'Advanced frameworks for growth loops, channel scaling, and metrics.',
-    skills: 'Market, Finance'
-  },
-  { 
-    id: 'week-15', 
-    title: 'Operating a Company', 
-    description: 'Week 15: From Chaos to Machine.', 
-    type: 'core',
-    topic: 'Strategy',
-    duration: '16 mins',
-    xp: '+80 XP',
-    overview: 'Structuring standard operations, setting OKRs, and reporting metrics.',
-    skills: 'Strategy, Leadership'
-  },
-  { 
-    id: 'week-16', 
-    title: 'Winning Enterprise', 
-    description: 'Week 16: Building for B2B.', 
-    type: 'core',
-    topic: 'Market',
-    duration: '15 mins',
-    xp: '+80 XP',
-    overview: 'Enterprise sales cycles, contract negotiations, and security compliance.',
-    skills: 'Market, Negotiation'
-  },
-  { 
-    id: 'week-17', 
-    title: 'Category-Defining IoT', 
-    description: 'Week 17: Integrated Hardware Systems.', 
-    type: 'core',
-    topic: 'Strategy',
-    duration: '20 mins',
-    xp: '+100 XP',
-    overview: 'The complexities of launching hardware, supply chains, and manufacturing.',
-    skills: 'Strategy, Risk'
-  },
-  { 
-    id: 'week-18', 
-    title: 'Scaling to a Machine', 
-    description: 'Week 18: From Chaos to Scalable Systems.', 
-    type: 'core',
-    topic: 'Leadership',
-    duration: '18 mins',
-    xp: '+80 XP',
-    overview: 'Delegation frameworks, hiring senior leadership, and corporate governance.',
-    skills: 'Leadership, Strategy'
-  },
-  { 
-    id: 'week-19', 
-    title: 'User Interviews', 
-    description: 'Week 19: Master User Interviews Like Twitch.', 
-    type: 'core',
-    topic: 'Market',
-    duration: '14 mins',
-    xp: '+80 XP',
-    overview: 'Extracting clean, unbiased insights from active customer feedback loops.',
-    skills: 'Market, Negotiation'
-  },
+  }
 ]
 
 export default function WorldMapPage() {
@@ -244,70 +137,53 @@ export default function WorldMapPage() {
     <GameShell>
       <div className="space-y-10 pb-32 max-w-4xl mx-auto">
         {/* Header section */}
-        <div className="space-y-4 border-b border-white/[0.08] pb-6">
-          <div className="flex justify-between items-end">
+        <div className="space-y-4 border-b border-border/80 pb-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
             <div className="space-y-1.5">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-medium tracking-wide text-primary/80">Academy Curriculum</span>
+                <span className="text-xs font-semibold tracking-wide text-primary/80 font-sans">Academy Curriculum</span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground/90">The Academy Path</h1>
+              <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground/90">How to Start a Startup</h1>
               <p className="text-sm text-muted-foreground font-normal">
-                Master 52 weeks of elite founder theory and mental models.
+                Follow this step-by-step roadmap to learn startup fundamentals.
               </p>
             </div>
-            <div className="hidden sm:flex gap-4">
-              <div className="glass-card px-4 py-2.5 rounded-xl flex items-center gap-2">
+            <div className="flex gap-4">
+              <div className="glass-card px-4 py-2.5 rounded-xl flex items-center gap-2 border border-border shadow-sm">
                 <BookOpen className="w-4 h-4 text-muted-foreground" />
                 <span className="text-xs font-mono font-medium text-foreground tracking-wide">
-                  {state.completedLessons.length} / 52 Modules
+                  {state.completedLessons.filter(id => ACADEMY_PATH.some(p => p.id === id)).length} / 10 Modules
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Level selector tabs */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 pt-2">
-            {WORLDS.map((world) => {
-              const isActive = world.id === 'foundation'
-              return (
-                <motion.div 
-                  key={world.id} 
-                  whileHover={isActive ? { scale: 1.01, y: -1 } : {}}
-                  className={cn(
-                    "glass-card p-4 rounded-xl cursor-pointer transition-all border relative overflow-hidden",
-                    isActive ? "bg-white/[0.02] border-white/10" : "opacity-30 border-white/5 grayscale pointer-events-none"
-                  )}
-                >
-                  {isActive && (
-                    <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/10 blur-xl rounded-full" />
-                  )}
-                  <h3 className="font-semibold text-[13px] text-foreground/90 tracking-tight">{world.name}</h3>
-                  <div className="flex justify-between items-center mt-3 text-[11px] text-muted-foreground tracking-wide font-mono">
-                    <span>{isActive ? `${world.weeks} Modules` : 'Locked'}</span>
-                    {isActive ? (
-                      <span className="text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-md font-medium border border-emerald-500/20">Active</span>
-                    ) : (
-                      <Lock className="w-3.5 h-3.5 text-muted-foreground/50" />
-                    )}
-                  </div>
-                </motion.div>
-              )
-            })}
+          {/* Active Course Banner */}
+          <div className="glass-card p-5 rounded-2xl bg-secondary/30 border border-border/80 flex items-start gap-4 shadow-sm">
+            <div className="p-3 bg-primary/10 rounded-xl text-primary border border-primary/20 shrink-0">
+              <Rocket className="w-5 h-5" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="font-semibold text-sm text-foreground">Active Course: How to Start a Startup</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed max-w-xl font-sans">
+                This course covers the absolute essentials of building a startup—from finding a real problem that people have, to designing a solution, hiring a team, managing money, and planning your launch.
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Phase Header */}
-        <div className="text-center py-6">
-          <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
-            Strategic Phase: Building the Mental Framework
+        <div className="text-center py-2">
+          <h2 className="text-xl md:text-2xl font-bold tracking-tight text-foreground">
+            Your 10-Week Startup Journey
           </h2>
-          <p className="text-xs text-muted-foreground mt-1 font-normal">Level 1: Foundation Modules</p>
+          <p className="text-xs text-muted-foreground mt-1 font-normal font-sans">Complete each week to unlock the next step in your path!</p>
         </div>
 
         {/* Timeline path container */}
         <div className="relative mt-8 max-w-3xl mx-auto px-4">
           {/* Vertical central tracking line */}
-          <div className="absolute left-10 md:left-1/2 -translate-x-1/2 top-4 bottom-4 w-px bg-gradient-to-b from-emerald-500/80 via-primary/30 to-white/5 pointer-events-none" />
+          <div className="absolute left-10 md:left-1/2 -translate-x-1/2 top-4 bottom-4 w-px bg-gradient-to-b from-emerald-500/80 via-primary/30 to-border/40 pointer-events-none" />
           
           <div className="space-y-12 md:space-y-16">
             {ACADEMY_PATH.map((node, i) => {
@@ -325,12 +201,12 @@ export default function WorldMapPage() {
                         whileHover={status !== 'locked' ? { scale: 1.08 } : {}}
                         whileTap={status !== 'locked' ? { scale: 0.96 } : {}}
                         className={cn(
-                          "w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-300 relative shadow-lg",
+                          "w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-300 relative shadow-md",
                           status === 'complete' 
-                            ? "bg-emerald-950/80 border-emerald-500 text-emerald-400" 
+                            ? "bg-emerald-50 border-emerald-500 text-emerald-600" 
                             : status === 'current' 
-                              ? "bg-primary border-primary text-primary-foreground shadow-[0_0_20px_rgba(255,255,255,0.25)] animate-pulse" 
-                              : "bg-neutral-900 border-white/5 text-muted-foreground/30"
+                              ? "bg-primary border-primary text-primary-foreground shadow-[0_0_20px_rgba(var(--primary-rgb,59,130,246),0.25)] animate-pulse" 
+                              : "bg-secondary border-border text-muted-foreground/40"
                         )}
                       >
                         {status === 'complete' ? (
@@ -365,10 +241,10 @@ export default function WorldMapPage() {
                     <Card className={cn(
                       "w-full max-w-sm transition-all duration-300 p-5 rounded-2xl relative overflow-hidden",
                       status === 'complete' 
-                        ? "glass-card opacity-70 hover:opacity-100 hover:border-emerald-500/30" 
+                        ? "glass-card hover:border-emerald-500/30 shadow-sm opacity-95 hover:opacity-100" 
                         : status === 'current' 
-                          ? "glass-card border-primary/30 shadow-[0_0_30px_rgba(var(--primary)/0.15)] hover:border-primary/50" 
-                          : "border border-white/5 bg-transparent opacity-40 select-none"
+                          ? "glass-card border-primary/40 shadow-[0_0_25px_rgba(var(--primary-rgb,59,130,246),0.08)] hover:border-primary/60" 
+                          : "border border-border bg-secondary/15 opacity-50 select-none"
                     )}>
                       {/* Active Indicator Spotlight */}
                       {status === 'current' && (
@@ -380,20 +256,20 @@ export default function WorldMapPage() {
                         {/* Topic Tag and Status Indicator */}
                         <div className="flex justify-between items-center text-[11px] font-mono tracking-wide">
                           <span className={cn(
-                            "px-2 py-0.5 rounded-md font-medium",
-                            status === 'complete' ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
-                            status === 'current' ? "bg-primary/15 text-primary border border-primary/30" :
-                            "bg-white/[0.05] text-muted-foreground/70"
+                            "px-2 py-0.5 rounded-md font-medium text-[10px]",
+                            status === 'complete' ? "bg-emerald-100 text-emerald-700 border border-emerald-200/50" :
+                            status === 'current' ? "bg-primary/10 text-primary border border-primary/20" :
+                            "bg-secondary text-muted-foreground/70 border border-border/50"
                           )}>
                             {node.topic}
                           </span>
                           {status === 'current' && (
-                            <span className="text-primary font-medium tracking-wide animate-pulse flex items-center gap-1.5">
+                            <span className="text-primary font-medium tracking-wide animate-pulse flex items-center gap-1.5 text-[10px]">
                               <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Active Module
                             </span>
                           )}
                           {status === 'complete' && (
-                            <span className="text-emerald-400 font-medium tracking-wide flex items-center gap-1.5">
+                            <span className="text-emerald-600 font-semibold tracking-wide flex items-center gap-1.5 text-[10px]">
                               Completed
                             </span>
                           )}
@@ -409,15 +285,15 @@ export default function WorldMapPage() {
                           )}>
                             {node.title}
                           </h4>
-                          <p className="text-xs text-muted-foreground/80 leading-relaxed mt-1">
+                          <p className="text-xs text-muted-foreground/80 leading-relaxed mt-1 font-sans">
                             {status === 'locked' ? 'Locked Module' : node.description}
                           </p>
                         </div>
 
                         {/* Show Details for Completed or Current */}
                         {status !== 'locked' && (
-                          <div className="pt-3 border-t border-white/[0.08] space-y-3">
-                            <p className="text-[11px] text-muted-foreground/70 leading-relaxed">
+                          <div className="pt-3 border-t border-border/60 space-y-3">
+                            <p className="text-[11px] text-muted-foreground/70 leading-relaxed font-sans">
                               {node.overview}
                             </p>
                             
@@ -428,7 +304,7 @@ export default function WorldMapPage() {
                               <span className="flex items-center gap-1.5">
                                 <Activity className="w-3 h-3" /> {node.skills}
                               </span>
-                              <span className="text-emerald-400 font-medium text-[11px]">
+                              <span className="text-emerald-600 font-bold text-[11px]">
                                 {node.xp}
                               </span>
                             </div>
@@ -437,7 +313,7 @@ export default function WorldMapPage() {
 
                         {/* Launch Module Call to Action */}
                         {status === 'current' && (
-                          <Button asChild className="w-full mt-4 h-10 bg-primary text-primary-foreground hover:bg-primary/90 text-[13px] font-medium rounded-xl shadow-[0_0_15px_rgba(var(--primary)/0.2)] transition-all">
+                          <Button asChild className="w-full mt-4 h-10 bg-primary text-primary-foreground hover:bg-primary/90 text-[13px] font-medium rounded-xl shadow-[0_0_15px_rgba(var(--primary-rgb,59,130,246),0.2)] transition-all">
                             <Link href={`/lesson/${node.id}`}>
                               <span>Launch Lesson</span>
                               <ChevronRight className="w-4 h-4 ml-1.5" />
