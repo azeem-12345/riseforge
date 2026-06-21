@@ -22,6 +22,8 @@ import { cn } from '@/lib/utils'
 import { ACADEMY_CONTENT } from '@/lib/academy-data'
 import { PlaceHolderImages } from '@/lib/placeholder-images'
 import { useUser } from '@/firebase'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 export default function LessonPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
@@ -114,85 +116,42 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                         <Sparkles className="w-3 h-3" /> Core Concept • Week {lesson.week}
                       </p>
                     </div>
-                    <div className="text-sm leading-relaxed text-foreground/80 space-y-6 pt-4">
-                      {lesson.theory.split('\\n').map((line, i) => {
-                        const trimmed = line.trim();
-                        if (trimmed === '') return null;
-                        if (trimmed.startsWith('!!IMAGE:')) {
-                          const imageId = trimmed.replace('!!IMAGE:', '').replace('!!', '').trim()
-                          const imageData = PlaceHolderImages.find(img => img.id === imageId)
-                          if (imageData) {
-                            return (
-                              <div key={i} className="my-10 flex flex-col items-center">
-                                <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-border shadow-sm max-w-4xl mx-auto group">
-                                  <Image 
-                                    src={imageData.imageUrl} 
-                                    alt={imageData.description}
-                                    fill
-                                    className="object-cover object-center group-hover:scale-102 transition-transform duration-700"
-                                  />
-                                </div>
-                                <p className="text-[10px] font-semibold text-muted-foreground mt-4 tracking-widest uppercase">{imageData.description}</p>
-                              </div>
-                            )
-                          }
-                        }
-                        if (trimmed.startsWith('#') || trimmed.startsWith('## ') || trimmed.startsWith('### ')) {
-                          const cleanText = trimmed.replace(/^#+\\s*/, '').replaceAll('**', '').replaceAll('*', '').trim();
-                          return (
-                            <h3 key={i} className="text-lg font-bold text-primary mt-8 mb-4 tracking-wide border-l-2 border-primary pl-4 font-sans">
-                              {cleanText}
-                            </h3>
-                          )
-                        }
-                        if (trimmed.startsWith('> ')) {
-                          const cleanLine = trimmed.replace(/^>\\s*/, '');
-                          let type = 'info';
-                          let content = cleanLine;
-                          if (cleanLine.startsWith('[!IMPORTANT]')) { type = 'important'; content = cleanLine.replace('[!IMPORTANT]', '').trim(); } 
-                          else if (cleanLine.startsWith('[!WARNING]')) { type = 'warning'; content = cleanLine.replace('[!WARNING]', '').trim(); } 
-                          else if (cleanLine.startsWith('[!TIP]')) { type = 'tip'; content = cleanLine.replace('[!TIP]', '').trim(); }
-                          
-                          const cleanContent = content.replaceAll('**', '').replaceAll('*', '').trim();
-                          return (
-                            <div key={i} className={cn(
-                              "p-5 rounded-xl border my-6 flex gap-4 text-[14px] leading-relaxed font-sans",
-                              type === 'important' && "bg-primary/5 border-primary/20 text-foreground",
-                              type === 'warning' && "bg-amber-500/5 border-amber-500/20 text-foreground",
-                              type === 'tip' && "bg-emerald-500/5 border-emerald-500/20 text-foreground",
-                              type === 'info' && "bg-secondary border-border text-foreground"
-                            )}>
-                              <Sparkles className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                              <div className="font-medium">{cleanContent}</div>
-                            </div>
-                          )
-                        }
-                        if (trimmed.startsWith('|')) {
-                          const cells = trimmed.split('|').filter(c => c.trim() !== '').map(c => c.trim());
-                          if (cells.length === 0 || trimmed.includes('---')) return null;
-                          const cleanCol1 = cells[0].replaceAll('**', '').replaceAll('*', '');
-                          const cleanCol2 = cells[1].replaceAll('**', '').replaceAll('*', '');
-                          return (
-                            <div key={i} className="grid grid-cols-[1fr_2fr] gap-6 py-3.5 border-b border-border last:border-0 font-sans">
-                              <span className="text-xs font-semibold text-primary/80 uppercase tracking-wider">{cleanCol1}</span>
-                              <span className="text-[14px] text-muted-foreground/95 font-medium leading-relaxed">{cleanCol2}</span>
-                            </div>
-                          )
-                        }
-                        if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-                          const content = trimmed.replace(/^[-*]\\s+/, '');
-                          const cleanContent = content.replaceAll('**', '').replaceAll('*', '').trim();
-                          return (
-                            <div key={i} className="flex items-start gap-2.5 my-2 pl-4 text-foreground/80 font-sans">
-                              <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2.5 shrink-0" />
-                              <span className="text-sm font-normal leading-relaxed">{cleanContent}</span>
-                            </div>
-                          )
-                        }
-                        const cleanParagraph = trimmed.replaceAll('**', '').replaceAll('*', '');
-                        return <p key={i} className="font-normal text-[15px] leading-relaxed text-foreground/90 font-sans my-3">{cleanParagraph}</p>
-                      })}
-                    </div>
+                    <div className="text-base leading-relaxed text-foreground/80 pt-4">
+                      <ReactMarkdown 
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          h2: ({node, ...props}) => <h2 className="text-2xl font-black text-primary mt-12 mb-6 tracking-wide border-b border-primary/20 pb-2" {...props} />,
+                          h3: ({node, ...props}) => <h3 className="text-xl font-bold text-foreground mt-8 mb-4 border-l-4 border-primary pl-4" {...props} />,
+                          p: ({node, ...props}) => {
+                            if (typeof props.children === 'string' && props.children.startsWith('!!IMAGE:')) {
+                              const imageId = props.children.replace('!!IMAGE:', '').replace('!!', '').trim()
+                              const imageData = PlaceHolderImages.find(img => img.id === imageId)
+                              if (imageData) {
+                                return (
+                                  <div className="my-10 flex flex-col items-center not-prose">
+                                    <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-border shadow-sm max-w-4xl mx-auto group">
+                                      <Image 
+                                        src={imageData.imageUrl} 
+                                        alt={imageData.description}
+                                        fill
+                                        className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                                      />
+                                    </div>
+                                    <p className="text-[10px] font-semibold text-muted-foreground mt-4 tracking-widest uppercase">{imageData.description}</p>
+                                  </div>
+                                )
+                              }
+                            }
+                            return <p className="mb-6 text-[15px] leading-8 text-foreground/90 font-medium" {...props} />
+                          },
+                          ul: ({node, ...props}) => <ul className="list-disc pl-6 mb-6 space-y-2 marker:text-primary" {...props} />,
+                          li: ({node, ...props}) => <li className="text-[15px] font-medium text-foreground/80 leading-7" {...props} />,
+                          strong: ({node, ...props}) => <strong className="font-bold text-foreground" {...props} />,
+                        }}
+                      >
+                        {lesson.theory}
+                      </ReactMarkdown>
+                    </div>v>
                   </CardContent>
                 </Card>
 

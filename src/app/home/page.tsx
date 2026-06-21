@@ -136,38 +136,69 @@ export default function WorldMapPage() {
   return (
     <GameShell>
       <div className="space-y-10 pb-32 max-w-4xl mx-auto">
-        {/* Header section */}
-        <div className="space-y-4 border-b border-border/80 pb-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold tracking-wide text-primary/80 font-sans">Academy Curriculum</span>
+        {/* Hero Dashboard Section */}
+        <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-card shadow-2xl mb-12">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/5 pointer-events-none" />
+          <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/20 rounded-full blur-[80px] pointer-events-none" />
+          <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] pointer-events-none" />
+          
+          <div className="relative z-10 p-8 sm:p-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+            <div className="space-y-4 max-w-xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest">
+                <Sparkles className="w-3.5 h-3.5" /> Academy Command Center
               </div>
-              <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground/90">How to Start a Startup</h1>
-              <p className="text-sm text-muted-foreground font-normal">
-                Follow this step-by-step roadmap to learn startup fundamentals.
+              <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-foreground leading-[1.1]">
+                Welcome back, <br className="hidden sm:block" />
+                <span className="text-primary">{state.name}</span>
+              </h1>
+              <p className="text-muted-foreground text-base leading-relaxed font-sans">
+                You are currently ranked as an <strong className="text-foreground">{state.levelTitle}</strong>. 
+                Keep pushing through the curriculum to unlock new strategic paradigms and climb the global leaderboards.
               </p>
-            </div>
-            <div className="flex gap-4">
-              <div className="glass-card px-4 py-2.5 rounded-xl flex items-center gap-2 border border-border shadow-sm">
-                <BookOpen className="w-4 h-4 text-muted-foreground" />
-                <span className="text-xs font-mono font-medium text-foreground tracking-wide">
-                  {state.completedLessons.filter(id => ACADEMY_PATH.some(p => p.id === id)).length} / 10 Modules
-                </span>
+              <div className="pt-4 flex flex-wrap gap-4">
+                <Button className="rounded-xl h-12 px-6 font-bold shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 text-white cursor-pointer" onClick={() => window.scrollTo({ top: 500, behavior: 'smooth' })}>
+                  Continue Journey <ChevronRight className="w-4 h-4 ml-2" />
+                </Button>
+                <Button variant="outline" className="rounded-xl h-12 px-6 font-bold border-border hover:bg-secondary cursor-pointer">
+                  View Profile
+                </Button>
               </div>
             </div>
-          </div>
 
-          {/* Active Course Banner */}
-          <div className="glass-card p-5 rounded-2xl bg-secondary/30 border border-border/80 flex items-start gap-4 shadow-sm">
-            <div className="p-3 bg-primary/10 rounded-xl text-primary border border-primary/20 shrink-0">
-              <Rocket className="w-5 h-5" />
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-semibold text-sm text-foreground">Active Course: How to Start a Startup</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed max-w-xl font-sans">
-                This course covers the absolute essentials of building a startup—from finding a real problem that people have, to designing a solution, hiring a team, managing money, and planning your launch.
-              </p>
+            <div className="w-full md:w-auto bg-background/50 backdrop-blur-md border border-border/60 rounded-2xl p-6 shadow-xl shrink-0 flex flex-col gap-6">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center text-white font-black text-2xl shadow-inner">
+                  {state.level}
+                </div>
+                <div>
+                  <p className="text-xs uppercase font-bold tracking-wider text-muted-foreground">Current Status</p>
+                  <p className="text-xl font-black text-foreground">{state.levelTitle}</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center text-xs font-bold">
+                  <span className="text-muted-foreground">XP Progress</span>
+                  <span className="text-primary">{state.xp} / {state.level * 1000}</span>
+                </div>
+                <div className="w-full h-3 bg-black/5 rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: `${Math.min(100, (state.xp / (state.level * 1000)) * 100)}%` }}
+                    transition={{ duration: 1, delay: 0.2 }}
+                    className="h-full bg-gradient-to-r from-primary to-indigo-500 rounded-full"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4 pt-2 border-t border-border/50">
+                <div>
+                  <p className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Modules</p>
+                  <p className="text-lg font-black text-foreground">{state.completedLessons.length} / 10</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Current Streak</p>
+                  <p className="text-lg font-black text-orange-500 flex items-center gap-1">{state.streak || 1} <span className="text-sm">🔥</span></p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
