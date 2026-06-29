@@ -19,7 +19,8 @@ import {
   Info,
   Plus,
   Trash2,
-  X
+  X,
+  Zap
 } from 'lucide-react'
 import { useGameState } from '@/hooks/use-game-state'
 import { founderMentor, type MentorOutput } from '@/ai/flows/founder-mentor-flow'
@@ -44,6 +45,7 @@ export default function MentorPage() {
   const { state } = useGameState()
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [selectedModel, setSelectedModel] = useState('gemini-2.5-pro')
   
   // Threads State
   const [threads, setThreads] = useState<ChatThread[]>([])
@@ -142,7 +144,8 @@ export default function MentorPage() {
       const result = await founderMentor({
         userQuestion: currentInput,
         level: state.level,
-        levelTitle: state.levelTitle
+        levelTitle: state.levelTitle,
+        modelPreference: selectedModel
       })
       
       const mentorMsg: ChatMessage = { role: 'mentor', data: result, timestamp: Date.now() }
@@ -217,6 +220,20 @@ export default function MentorPage() {
           </div>
           
           <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 bg-background/80 border border-white/10 rounded-full px-3 py-1.5 shadow-sm">
+              <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0 animate-pulse" />
+              <select
+                value={selectedModel}
+                onChange={(e) => setSelectedModel(e.target.value)}
+                className="bg-transparent text-foreground font-semibold text-[11px] focus:outline-none cursor-pointer pr-1"
+              >
+                <option value="gemini-2.5-pro" className="bg-card text-foreground">✨ Gemini 2.5 Pro (Flagship)</option>
+                <option value="claude-3-5-sonnet" className="bg-card text-foreground">🧠 Claude 3.5 Sonnet</option>
+                <option value="gpt-4o" className="bg-card text-foreground">⚡ GPT-4o (Omni Advisor)</option>
+                <option value="oracle" className="bg-card text-foreground">🛡️ Neural Oracle (100% Logic)</option>
+              </select>
+            </div>
+
             <div className="hidden sm:flex px-3 py-1.5 rounded-full bg-accent/5 border border-accent/10 items-center gap-2">
               <ShieldAlert className="w-3 h-3 text-accent" />
               <span className="text-[9px] font-black text-accent uppercase">{state.levelTitle}</span>
@@ -391,7 +408,12 @@ export default function MentorPage() {
                           </div>
                         </div>
                       ) : null}
-                      <div className="flex items-center gap-1.5 opacity-50 px-1 justify-end">
+                      <div className="flex items-center justify-end gap-2 opacity-70 px-1 pt-1">
+                        {msg.data?.modelUsed && (
+                          <span className="text-[9px] font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                            ⚡ {msg.data.modelUsed}
+                          </span>
+                        )}
                          <span className="text-[9px] font-bold text-muted-foreground uppercase">
                           {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>

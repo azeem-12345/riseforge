@@ -14,6 +14,7 @@ const MentorInputSchema = z.object({
   userQuestion: z.string().describe('The question or dilemma the founder is facing.'),
   level: z.number(),
   levelTitle: z.string(),
+  modelPreference: z.string().optional().describe('Preferred AI model: gemini-2.5-pro, claude-3-5-sonnet, gpt-4o, oracle'),
 });
 export type MentorInput = z.infer<typeof MentorInputSchema>;
 
@@ -23,10 +24,28 @@ const MentorOutputSchema = z.object({
   philosophicalInsight: z.string().describe('A deeper, mindset-shifting insight inspired by world-class founders.'),
   riskAssessment: z.string().describe('A specific warning or assessment of risks involved.'),
   isSimulated: z.boolean().optional().describe('Indicates if this advice is locally simulated due to missing API keys.'),
+  modelUsed: z.string().optional().describe('The AI model name that generated this response.'),
 });
 export type MentorOutput = z.infer<typeof MentorOutputSchema>;
 
-function generateProceduralAdvice(userQuestion: string, levelTitle: string): MentorOutput {
+function generateProceduralAdvice(userQuestion: string, levelTitle: string, modelPreference?: string): MentorOutput {
+  const modelNameMap: Record<string, string> = {
+    'gemini-2.5-pro': 'Gemini 2.5 Pro (Simulated Engine)',
+    'claude-3-5-sonnet': 'Claude 3.5 Sonnet (Simulated Engine)',
+    'gpt-4o': 'GPT-4o (Simulated Engine)',
+    'oracle': 'RiseForge Neural Oracle 100% Logic'
+  };
+  const modelUsed = modelNameMap[modelPreference || 'gemini-2.5-pro'] || 'RiseForge Neural Oracle 100% Logic';
+
+  const rawAdvice = getRawProceduralAdvice(userQuestion, levelTitle);
+  return {
+    ...rawAdvice,
+    isSimulated: modelPreference !== 'oracle',
+    modelUsed
+  };
+}
+
+function getRawProceduralAdvice(userQuestion: string, levelTitle: string): Omit<MentorOutput, 'modelUsed'> {
   const query = userQuestion.toLowerCase();
   
   // Clean question snippet for dynamic echo
@@ -207,16 +226,80 @@ const founderMentorFlow = ai.defineFlow(
     outputSchema: MentorOutputSchema,
   },
   async (input) => {
+    const pref = input.modelPreference || 'gemini-2.5-pro';
+
+    // If user chose RiseForge Oracle, give instant 100% logic response
+    if (pref === 'oracle') {
+      return generateProceduralAdvice(input.userQuestion, input.levelTitle, 'oracle');
+    }
+
+    // Try Anthropic Claude 3.5 Sonnet if requested and API key present
+    if (pref === 'claude-3-5-sonnet' && process.env.ANTHROPIC_API_KEY) {
+      try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'x-api-key': process.env.ANTHROPIC_API_KEY,
+            'anthropic-version': '2023-06-01',
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'claude-3-5-sonnet-20241022',
+            max_tokens: 1000,
+            system: `You are the RiseForge Master Mentor, an elite AI advisor. Respond ONLY in valid JSON matching this exact schema: { "advice": string, "actionSteps": string[], "philosophicalInsight": string, "riskAssessment": string }`,
+            messages: [{ role: 'user', content: `Founder level: ${input.levelTitle}. Dilemma: ${input.userQuestion}` }]
+          })
+        });
+        const data = await res.json();
+        if (data?.content?.[0]?.text) {
+          const parsed = JSON.parse(data.content[0].text);
+          return { ...parsed, isSimulated: false, modelUsed: 'Claude 3.5 Sonnet' };
+        }
+      } catch (err) {
+        console.warn("Claude API call failed:", err);
+      }
+    }
+
+    // Try OpenAI GPT-4o if requested and API key present
+    if (pref === 'gpt-4o' && process.env.OPENAI_API_KEY) {
+      try {
+        const res = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o',
+            response_format: { type: 'json_object' },
+            messages: [
+              { role: 'system', content: `You are the RiseForge Master Mentor, an elite AI advisor. Respond ONLY in JSON matching: { "advice": string, "actionSteps": string[], "philosophicalInsight": string, "riskAssessment": string }` },
+              { role: 'user', content: `Founder level: ${input.levelTitle}. Dilemma: ${input.userQuestion}` }
+            ]
+          })
+        });
+        const data = await res.json();
+        if (data?.choices?.[0]?.message?.content) {
+          const parsed = JSON.parse(data.choices[0].message.content);
+          return { ...parsed, isSimulated: false, modelUsed: 'GPT-4o' };
+        }
+      } catch (err) {
+        console.warn("GPT-4o API call failed:", err);
+      }
+    }
+
+    // Default / Gemini 2.5 Pro request
     try {
       const { output } = await mentorPrompt(input);
       if (!output) throw new Error('Mentor failed to respond: Empty output');
       return {
         ...output,
-        isSimulated: false
+        isSimulated: false,
+        modelUsed: 'Gemini 2.5 Pro'
       };
     } catch (e) {
-      console.warn("Genkit AI Mentor failed, using high-quality procedural fallback. Error:", e);
-      return generateProceduralAdvice(input.userQuestion, input.levelTitle);
+      console.warn("Genkit AI Mentor failed or unconfigured, using high-quality procedural fallback. Error:", e);
+      return generateProceduralAdvice(input.userQuestion, input.levelTitle, pref);
     }
   }
 );
