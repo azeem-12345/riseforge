@@ -17,6 +17,7 @@ import {
   TrendingUp
 } from 'lucide-react'
 import { useUser } from '@/firebase'
+import { cn } from '@/lib/utils'
 
 export default function LandingPage() {
   const router = useRouter()
