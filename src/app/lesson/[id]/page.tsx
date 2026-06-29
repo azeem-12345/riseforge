@@ -151,7 +151,7 @@ export default function LessonPage({ params }: { params: Promise<{ id: string }>
                       >
                         {lesson.theory}
                       </ReactMarkdown>
-                    </div>v>
+                    </div>
                   </CardContent>
                 </Card>
 
