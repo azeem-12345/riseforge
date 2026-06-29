@@ -15,6 +15,7 @@ const MentorInputSchema = z.object({
   level: z.number(),
   levelTitle: z.string(),
   modelPreference: z.string().optional().describe('Preferred AI model: gemini-2.5-pro, claude-3-5-sonnet, gpt-4o, oracle'),
+  customApiKey: z.string().optional().describe('User provided API key for real LLM inference'),
 });
 export type MentorInput = z.infer<typeof MentorInputSchema>;
 
@@ -219,6 +220,117 @@ Your mission:
 Ensure the "philosophicalInsight" feels like something a legendary founder would say in a private boardroom.`,
 });
 
+async function callDirectRealLLM(input: MentorInput, apiKey: string, modelPref: string): Promise<MentorOutput> {
+  const systemInstruction = `You are the RiseForge Master Mentor, an elite AI advisor inspired by top Silicon Valley founders and executive coaches.
+Current Founder Rank: ${input.levelTitle} (Level ${input.level}).
+You MUST analyze the founder's exact dilemma with genuine intelligence, deep strategic logic, and custom real-world knowledge.
+Never give repetitive or template answers. Every response must be tailored specifically to the dilemma.
+You MUST respond strictly in valid JSON matching this exact schema structure:
+{
+  "advice": "Primary strategic diagnosis and detailed customized advice for their exact situation.",
+  "actionSteps": ["Step 1 concrete task", "Step 2 concrete task", "Step 3 concrete task"],
+  "philosophicalInsight": "A boardroom philosophical quote or mindset shift relevant to this issue.",
+  "riskAssessment": "Critical warning or risk analysis regarding their proposed path."
+}`;
+
+  const userPrompt = `Founder level: ${input.levelTitle}. Dilemma: ${input.userQuestion}`;
+
+  // 1. Anthropic API
+  if (apiKey.startsWith('sk-ant-') || modelPref === 'claude-3-5-sonnet') {
+    const keyToUse = apiKey.startsWith('sk-ant-') ? apiKey : (process.env.ANTHROPIC_API_KEY || apiKey);
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': keyToUse,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 1000,
+        system: systemInstruction,
+        messages: [{ role: 'user', content: userPrompt }]
+      })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data?.content?.[0]?.text) {
+        const parsed = JSON.parse(data.content[0].text);
+        return { ...parsed, isSimulated: false, modelUsed: 'Claude 3.5 Sonnet (Direct AI)' };
+      }
+    }
+  }
+
+  // 2. OpenAI API
+  if (apiKey.startsWith('sk-') || modelPref === 'gpt-4o') {
+    const keyToUse = (apiKey.startsWith('sk-') && !apiKey.startsWith('sk-ant-')) ? apiKey : (process.env.OPENAI_API_KEY || apiKey);
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${keyToUse}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        response_format: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: systemInstruction },
+          { role: 'user', content: userPrompt }
+        ]
+      })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data?.choices?.[0]?.message?.content) {
+        const parsed = JSON.parse(data.choices[0].message.content);
+        return { ...parsed, isSimulated: false, modelUsed: 'GPT-4o (Direct AI)' };
+      }
+    }
+  }
+
+  // 3. Google Gemini REST API (Default for AIzaSy... keys or Gemini preference)
+  const geminiKey = apiKey || process.env.GOOGLE_GENAI_API_KEY || process.env.GEMINI_API_KEY;
+  if (geminiKey) {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${geminiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: systemInstruction }] },
+        contents: [{ parts: [{ text: userPrompt }] }],
+        generationConfig: { responseMimeType: "application/json" }
+      })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (text) {
+        const parsed = JSON.parse(text);
+        return { ...parsed, isSimulated: false, modelUsed: 'Gemini 2.5 Pro (Direct AI)' };
+      }
+    } else {
+      const resFallback = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${geminiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: systemInstruction }] },
+          contents: [{ parts: [{ text: userPrompt }] }],
+          generationConfig: { responseMimeType: "application/json" }
+        })
+      });
+      if (resFallback.ok) {
+        const data = await resFallback.json();
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) {
+          const parsed = JSON.parse(text);
+          return { ...parsed, isSimulated: false, modelUsed: 'Gemini 1.5 Pro (Direct AI)' };
+        }
+      }
+    }
+  }
+
+  throw new Error("Direct LLM API execution failed or invalid API Key");
+}
+
 async function callLiveAICloud(input: MentorInput, modelName: string, pollModel: string = 'openai'): Promise<MentorOutput> {
   const systemPrompt = `You are the RiseForge Master Mentor, an elite AI advisor inspired by top Silicon Valley founders and executive coaches.
 Current Founder Rank: ${input.levelTitle} (Level ${input.level}).
@@ -270,6 +382,15 @@ const founderMentorFlow = ai.defineFlow(
     // If user chose RiseForge Oracle, give instant 100% logic response
     if (pref === 'oracle') {
       return generateProceduralAdvice(input.userQuestion, input.levelTitle, 'oracle');
+    }
+
+    // 1. If user provided custom API key, use direct real LLM call immediately!
+    if (input.customApiKey && input.customApiKey.trim() !== '') {
+      try {
+        return await callDirectRealLLM(input, input.customApiKey.trim(), pref);
+      } catch (err) {
+        console.warn("Custom API Key call failed, trying server keys/network:", err);
+      }
     }
 
     // Try Anthropic Claude 3.5 Sonnet if requested and API key present

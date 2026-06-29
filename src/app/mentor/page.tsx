@@ -20,7 +20,8 @@ import {
   Plus,
   Trash2,
   X,
-  Zap
+  Zap,
+  Key
 } from 'lucide-react'
 import { useGameState } from '@/hooks/use-game-state'
 import { founderMentor, type MentorOutput } from '@/ai/flows/founder-mentor-flow'
@@ -46,6 +47,8 @@ export default function MentorPage() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [selectedModel, setSelectedModel] = useState('gemini-2.5-pro')
+  const [customApiKey, setCustomApiKey] = useState('')
+  const [showKeyInput, setShowKeyInput] = useState(false)
   
   // Threads State
   const [threads, setThreads] = useState<ChatThread[]>([])
@@ -56,6 +59,9 @@ export default function MentorPage() {
 
   // Initialize Threads from localStorage
   useEffect(() => {
+    const savedKey = localStorage.getItem('riseforge_api_key')
+    if (savedKey) setCustomApiKey(savedKey)
+
     const savedThreads = localStorage.getItem('riseforge_mentor_threads')
     const activeId = localStorage.getItem('riseforge_mentor_active_thread_id')
     
@@ -145,7 +151,8 @@ export default function MentorPage() {
         userQuestion: currentInput,
         level: state.level,
         levelTitle: state.levelTitle,
-        modelPreference: selectedModel
+        modelPreference: selectedModel,
+        customApiKey
       })
       
       const mentorMsg: ChatMessage = { role: 'mentor', data: result, timestamp: Date.now() }
@@ -234,6 +241,19 @@ export default function MentorPage() {
               </select>
             </div>
 
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowKeyInput(!showKeyInput)}
+              className={cn(
+                "h-8 px-2.5 rounded-full border border-white/10 text-xs gap-1.5 transition-colors",
+                customApiKey ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-background/80 text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Key className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-bold uppercase">{customApiKey ? "Key Active" : "Add API Key"}</span>
+            </Button>
+
             <div className="hidden sm:flex px-3 py-1.5 rounded-full bg-accent/5 border border-accent/10 items-center gap-2">
               <ShieldAlert className="w-3 h-3 text-accent" />
               <span className="text-[9px] font-black text-accent uppercase">{state.levelTitle}</span>
@@ -253,6 +273,38 @@ export default function MentorPage() {
             </Button>
           </div>
         </div>
+
+        {/* API Key Input Banner */}
+        <AnimatePresence>
+          {showKeyInput && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="bg-card/95 border-b border-white/10 px-6 py-3 flex flex-wrap items-center justify-between gap-4 overflow-hidden backdrop-blur-md shrink-0 shadow-lg"
+            >
+              <div className="flex items-center gap-2 text-xs text-muted-foreground shrink-0">
+                <Key className="w-4 h-4 text-primary shrink-0" />
+                <span>Paste your personal API Key (Google Gemini, OpenAI, or Anthropic):</span>
+              </div>
+              <div className="flex items-center gap-2 flex-1 min-w-[280px] max-w-md">
+                <input
+                  type="password"
+                  placeholder="AIza... or sk-..."
+                  value={customApiKey}
+                  onChange={(e) => {
+                    setCustomApiKey(e.target.value)
+                    localStorage.setItem('riseforge_api_key', e.target.value)
+                  }}
+                  className="w-full bg-background border border-white/10 rounded-lg px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
+                />
+                <Button size="sm" onClick={() => setShowKeyInput(false)} className="h-8 text-xs font-bold px-4">
+                  Save Key
+                </Button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Split Screen Layout */}
         <div className="flex-1 flex overflow-hidden">
