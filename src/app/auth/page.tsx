@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Rocket, Mail, Lock, ArrowRight, AlertTriangle } from 'lucide-react';
+import { Rocket, Mail, Lock, ArrowRight, AlertTriangle, User as UserIcon, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,6 +21,8 @@ export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [nation, setNation] = useState('United States');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -35,16 +37,31 @@ export default function AuthPage() {
     }
   }, [user, isLoading, router]);
 
+  const saveUserData = (displayName?: string) => {
+    try {
+      const saved = localStorage.getItem('riseforge_ceo_v1');
+      const parsed = saved ? JSON.parse(saved) : {};
+      const finalName = name.trim() || displayName || parsed.name || (email ? email.split('@')[0] : 'Future Founder');
+      localStorage.setItem('riseforge_ceo_v1', JSON.stringify({
+        ...parsed,
+        name: finalName,
+        nation: nation || parsed.nation || 'Global'
+      }));
+    } catch(e) {}
+  };
+
   const performLocalAuthFallback = (userEmail?: string, providerName?: string) => {
     const fallbackEmail = userEmail || `${providerName || 'explorer'}@riseforge.com`;
+    const finalName = name.trim() || providerName || fallbackEmail.split('@')[0];
     const mockUser = {
       uid: 'user-' + Date.now(),
       email: fallbackEmail,
-      displayName: fallbackEmail.split('@')[0],
+      displayName: finalName,
       emailVerified: true,
       metadata: { creationTime: new Date().toISOString() }
     };
     localStorage.setItem('riseforge_mock_user', JSON.stringify(mockUser));
+    saveUserData(finalName);
     window.dispatchEvent(new Event('riseforge-auth-change'));
     router.push(isLogin ? '/home' : '/onboarding');
   };
@@ -63,9 +80,11 @@ export default function AuthPage() {
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
+        saveUserData();
         router.push('/home');
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
+        saveUserData();
         router.push('/onboarding');
       }
     } catch (err: any) {
@@ -86,7 +105,8 @@ export default function AuthPage() {
     }
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const res = await signInWithPopup(auth, provider);
+      saveUserData(res?.user?.displayName || undefined);
       router.push('/home');
     } catch (err: any) {
       console.warn("Google sign-in error, falling back to local session:", err);
@@ -106,7 +126,8 @@ export default function AuthPage() {
     }
     try {
       const provider = new FacebookAuthProvider();
-      await signInWithPopup(auth, provider);
+      const res = await signInWithPopup(auth, provider);
+      saveUserData(res?.user?.displayName || undefined);
       router.push('/home');
     } catch (err: any) {
       console.warn("Facebook sign-in error, falling back to local session:", err);
@@ -165,6 +186,46 @@ export default function AuthPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-3">
+              <div className="space-y-2">
+                <Label htmlFor="name">Full Name</Label>
+                <div className="relative">
+                  <UserIcon className="absolute left-3 top-3.5 w-4 h-4 text-muted-foreground" />
+                  <Input 
+                    id="name" 
+                    type="text" 
+                    placeholder="Future CEO / Your Name" 
+                    className="pl-10 h-11" 
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="nation">Country / Nation</Label>
+                <div className="relative">
+                  <Globe className="absolute left-3 top-3.5 w-4 h-4 text-muted-foreground" />
+                  <select
+                    id="nation"
+                    value={nation}
+                    onChange={(e) => setNation(e.target.value)}
+                    className="w-full pl-10 h-11 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    <option value="United States">🇺🇸 United States</option>
+                    <option value="United Kingdom">🇬🇧 United Kingdom</option>
+                    <option value="Canada">🇨🇦 Canada</option>
+                    <option value="India">🇮🇳 India</option>
+                    <option value="Germany">🇩🇪 Germany</option>
+                    <option value="Australia">🇦🇺 Australia</option>
+                    <option value="Singapore">🇸🇬 Singapore</option>
+                    <option value="France">🇫🇷 France</option>
+                    <option value="Japan">🇯🇵 Japan</option>
+                    <option value="Brazil">🇧🇷 Brazil</option>
+                    <option value="Pakistan">🇵🇰 Pakistan</option>
+                    <option value="United Arab Emirates">🇦🇪 United Arab Emirates</option>
+                    <option value="Global">🌐 Global / Other</option>
+                  </select>
+                </div>
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <div className="relative">
