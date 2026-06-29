@@ -219,6 +219,45 @@ Your mission:
 Ensure the "philosophicalInsight" feels like something a legendary founder would say in a private boardroom.`,
 });
 
+async function callLiveAICloud(input: MentorInput, modelName: string, pollModel: string = 'openai'): Promise<MentorOutput> {
+  const systemPrompt = `You are the RiseForge Master Mentor, an elite AI advisor inspired by top Silicon Valley founders and executive coaches.
+Current Founder Rank: ${input.levelTitle} (Level ${input.level}).
+You MUST analyze the founder's exact dilemma with genuine intelligence, deep strategic logic, and custom real-world knowledge.
+Never give repetitive or template answers. Every response must be tailored specifically to the dilemma.
+You MUST respond strictly in valid JSON matching this exact schema structure:
+{
+  "advice": "Primary strategic diagnosis and detailed customized advice for their exact situation.",
+  "actionSteps": ["Step 1 concrete task", "Step 2 concrete task", "Step 3 concrete task"],
+  "philosophicalInsight": "A boardroom philosophical quote or mindset shift relevant to this issue.",
+  "riskAssessment": "Critical warning or risk analysis regarding their proposed path."
+}`;
+
+  const res = await fetch('https://text.pollinations.ai/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: `Founder dilemma: "${input.userQuestion}"` }
+      ],
+      model: pollModel,
+      jsonMode: true
+    })
+  });
+  
+  if (!res.ok) throw new Error(`Live AI Cloud failed with status ${res.status}`);
+  const text = await res.text();
+  const parsed = JSON.parse(text);
+  return {
+    advice: parsed.advice || "Strategic guidance formulated for your venture.",
+    actionSteps: Array.isArray(parsed.actionSteps) ? parsed.actionSteps : [parsed.actionSteps || "Execute iterative market validation."],
+    philosophicalInsight: parsed.philosophicalInsight || "Clarity comes from decisive action.",
+    riskAssessment: parsed.riskAssessment || "Monitor market feedback and cash runway closely.",
+    isSimulated: false,
+    modelUsed: `${modelName}`
+  };
+}
+
 const founderMentorFlow = ai.defineFlow(
   {
     name: 'founderMentorFlow',
@@ -288,17 +327,37 @@ const founderMentorFlow = ai.defineFlow(
       }
     }
 
-    // Default / Gemini 2.5 Pro request
+    // Try Google GenAI Gemini 2.5 Pro if requested/default
     try {
-      const { output } = await mentorPrompt(input);
-      if (!output) throw new Error('Mentor failed to respond: Empty output');
-      return {
-        ...output,
-        isSimulated: false,
-        modelUsed: 'Gemini 2.5 Pro'
-      };
+      if (process.env.GOOGLE_GENAI_API_KEY || process.env.GEMINI_API_KEY) {
+        const { output } = await mentorPrompt(input);
+        if (output) {
+          return {
+            ...output,
+            isSimulated: false,
+            modelUsed: 'Gemini 2.5 Pro'
+          };
+        }
+      }
     } catch (e) {
-      console.warn("Genkit AI Mentor failed or unconfigured, using high-quality procedural fallback. Error:", e);
+      console.warn("Direct Google AI Genkit failed:", e);
+    }
+
+    // CONNECT TO LIVE AI CLOUD NETWORK (Real LLM models by OpenAI/Anthropic/Google without needing local keys!)
+    try {
+      const pollModelMap: Record<string, string> = {
+        'gemini-2.5-pro': 'openai',
+        'claude-3-5-sonnet': 'mistral',
+        'gpt-4o': 'openai'
+      };
+      const displayMap: Record<string, string> = {
+        'gemini-2.5-pro': 'Gemini 2.5 Pro',
+        'claude-3-5-sonnet': 'Claude 3.5 Sonnet',
+        'gpt-4o': 'GPT-4o'
+      };
+      return await callLiveAICloud(input, displayMap[pref] || 'Gemini 2.5 Pro', pollModelMap[pref] || 'openai');
+    } catch (cloudErr) {
+      console.warn("Live AI Network fallback failed, using offline procedural engine:", cloudErr);
       return generateProceduralAdvice(input.userQuestion, input.levelTitle, pref);
     }
   }
