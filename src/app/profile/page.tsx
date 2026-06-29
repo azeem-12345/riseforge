@@ -75,12 +75,16 @@ export default function ProfilePage() {
   }, [isEditing, state])
 
   const handleLogout = async () => {
-    if (!auth) return
-    try {
-      await signOut(auth)
-    } catch (e) {
-      console.error("Sign out error:", e)
+    localStorage.removeItem('riseforge_mock_user')
+    window.dispatchEvent(new Event('riseforge-auth-change'))
+    if (auth) {
+      try {
+        await signOut(auth)
+      } catch (e) {
+        console.error("Sign out error:", e)
+      }
     }
+    window.location.href = '/auth'
   }
 
   const applyTheme = (theme: typeof THEME_PRESETS[0]) => {
